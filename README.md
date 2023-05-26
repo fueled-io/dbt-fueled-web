@@ -3,7 +3,7 @@
 
 This dbt package:
 
-- Transforms and aggregates raw web event data collected from the [Snowplow JavaScript tracker][tracker-docs] into a set of derived tables: page views, sessions and users, plus an optional set of consent tables.
+- Transforms and aggregates raw web event data collected from the Fueled's Shopify and BigCommerce javascript event tracker into a set of derived tables: page views, sessions and users.
 - Derives a mapping between user identifiers, allowing for 'session stitching' and the development of a single customer view.
 - Processes **all web events incrementally**. It is not just constrained to page view events - any custom events you are tracking will also be incrementally processed.
 - Is designed in a modular manner, allowing you to easily integrate your own custom dbt models into the incremental framework provided by the package.
@@ -14,7 +14,7 @@ This project started off as a mirror of Snowplow Analytics' [dbt-snowplow-web](h
 
 ### Adapter Support
 
-The latest version of the fueled-web package supports BigQuery, Databricks, Redshift, Snowflake & Postgres. For previous versions see our [package docs](https://docs.snowplow.io/docs/modeling-your-data/modeling-your-data-with-dbt/).
+The latest version of the fueled-web package supports BigQuery, Databricks, Redshift, Snowflake & Postgres.
 
 ### Requirements
 
@@ -27,10 +27,10 @@ The package contains multiple staging models however the output models are as fo
 
 | Model                             | Description                                                                                                  |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| snowplow_web_page_views           | A table of page views, including engagement metrics such as scroll depth and engaged time.                   |
-| snowplow_web_sessions             | An aggregated table of page views, grouped on `domain_sessionid`.                                            |
-| snowplow_web_users                | An aggregated table of sessions to a user level, grouped on `domain_userid`.                                 |
-| snowplow_web_user_mapping         | Provides a mapping between user identifiers, `domain_userid` and `user_id`.                                  |
+| fueledweb_page_views           | A table of page views, including engagement metrics such as scroll depth and engaged time.                   |
+| fueledweb_sessions             | An aggregated table of page views, grouped on `domain_sessionid`.                                            |
+| fueledweb_users                | An aggregated table of sessions to a user level, grouped on `domain_userid`.                                 |
+| fueledweb_user_mapping         | Provides a mapping between user identifiers, `domain_userid` and `user_id`.                                  |
 
 # Copyright and license
 
