@@ -27,10 +27,10 @@ The package contains multiple staging models however the output models are as fo
 
 | Model                             | Description                                                                                                  |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| fueledweb_page_views           | A table of page views, including engagement metrics such as scroll depth and engaged time.                   |
-| fueledweb_sessions             | An aggregated table of page views, grouped on `domain_sessionid`.                                            |
-| fueledweb_users                | An aggregated table of sessions to a user level, grouped on `domain_userid`.                                 |
-| fueledweb_user_mapping         | Provides a mapping between user identifiers, `domain_userid` and `user_id`.                                  |
+| fueled_web_page_views           | A table of page views, including engagement metrics such as scroll depth and engaged time.                   |
+| fueled_web_sessions             | An aggregated table of page views, grouped on `domain_sessionid`.                                            |
+| fueled_web_users                | An aggregated table of sessions to a user level, grouped on `domain_userid`.                                 |
+| fueled_web_user_mapping         | Provides a mapping between user identifiers, `domain_userid` and `user_id`.                                  |
 
 # Copyright and license
 
