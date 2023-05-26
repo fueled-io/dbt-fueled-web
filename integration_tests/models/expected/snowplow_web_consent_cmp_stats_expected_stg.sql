@@ -10,4 +10,4 @@ select
   first_consent_event_type,
   cmp_interaction_time
 
-from {{ ref('snowplow_web_consent_cmp_stats_expected') }}
+from {{ ref('fueled_web_consent_cmp_stats_expected') }}

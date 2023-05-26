@@ -1,5 +1,5 @@
 {% macro filter_bots(table_alias = none) %}
-  {{ return(adapter.dispatch('filter_bots', 'snowplow_web')(table_alias)) }}
+  {{ return(adapter.dispatch('filter_bots', 'fueled_web')(table_alias)) }}
 {%- endmacro -%}
 
 {% macro default__filter_bots(table_alias = none) %}

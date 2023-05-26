@@ -1,8 +1,8 @@
-{% macro stitch_user_identifiers(enabled, relation=this, user_mapping_relation='snowplow_web_user_mapping') %}
-    {{ return(adapter.dispatch('stitch_user_identifiers', 'snowplow_web')(enabled, relation, user_mapping_relation)) }}
+{% macro stitch_user_identifiers(enabled, relation=this, user_mapping_relation='fueled_web_user_mapping') %}
+    {{ return(adapter.dispatch('stitch_user_identifiers', 'fueled_web')(enabled, relation, user_mapping_relation)) }}
 {%- endmacro -%}
 
-{% macro default__stitch_user_identifiers(enabled, relation=this, user_mapping_relation='snowplow_web_user_mapping') %}
+{% macro default__stitch_user_identifiers(enabled, relation=this, user_mapping_relation='fueled_web_user_mapping') %}
     {% if enabled | as_bool() %}
       -- Update sessions table with mapping
       update {{ relation }} as s
@@ -12,7 +12,7 @@
     {% endif %}
 {%- endmacro -%}
 
-{% macro spark__stitch_user_identifiers(enabled, relation=this, user_mapping_relation='snowplow_web_user_mapping') %}
+{% macro spark__stitch_user_identifiers(enabled, relation=this, user_mapping_relation='fueled_web_user_mapping') %}
     {% if enabled | as_bool() %}
       -- Update sessions table with mapping
       merge into {{ relation }} as s

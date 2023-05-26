@@ -2,26 +2,26 @@
 with prep as (
   select
     *,
-    parse_json(contexts_com_snowplowanalytics_snowplow_web_page_1_0_0) as contexts_com_snowplowanalytics_snowplow_web_page_1,
-    parse_json(unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1_0_0) as unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1,
-    parse_json(unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1_0_0) as unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1,
-    parse_json(contexts_com_iab_snowplow_spiders_and_robots_1_0_0) as contexts_com_iab_snowplow_spiders_and_robots_1,
-    parse_json(contexts_com_snowplowanalytics_snowplow_ua_parser_context_1_0_0) as contexts_com_snowplowanalytics_snowplow_ua_parser_context_1,
+    parse_json(contexts_com_fueledanalytics_fueled_web_page_1_0_0) as contexts_com_fueledanalytics_fueled_web_page_1,
+    parse_json(unstruct_event_com_fueledanalytics_fueled_consent_preferences_1_0_0) as unstruct_event_com_fueledanalytics_fueled_consent_preferences_1,
+    parse_json(unstruct_event_com_fueledanalytics_fueled_cmp_visible_1_0_0) as unstruct_event_com_fueledanalytics_fueled_cmp_visible_1,
+    parse_json(contexts_com_iab_fueled_spiders_and_robots_1_0_0) as contexts_com_iab_fueled_spiders_and_robots_1,
+    parse_json(contexts_com_fueledanalytics_fueled_ua_parser_context_1_0_0) as contexts_com_fueledanalytics_fueled_ua_parser_context_1,
     parse_json(contexts_nl_basjes_yauaa_context_1_0_0) as contexts_nl_basjes_yauaa_context_1
-  from {{ ref('snowplow_web_events') }}
+  from {{ ref('fueled_web_events') }}
   )
 
 , flatten as (
   select
     *,
-    unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1[0].basis_for_processing as basisForProcessing,
-    unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1[0].consent_scopes as consentScopes,
-    unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1[0].consent_url as consentUrl,
-    unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1[0].consent_version as consentVersion,
-    unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1[0].domains_applied as domainsApplied,
-    unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1[0].event_type as eventType,
-    unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1[0].gdpr_applies as gdprApplies,
-    unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1[0]:elapsed_time as elapsedTime
+    unstruct_event_com_fueledanalytics_fueled_consent_preferences_1[0].basis_for_processing as basisForProcessing,
+    unstruct_event_com_fueledanalytics_fueled_consent_preferences_1[0].consent_scopes as consentScopes,
+    unstruct_event_com_fueledanalytics_fueled_consent_preferences_1[0].consent_url as consentUrl,
+    unstruct_event_com_fueledanalytics_fueled_consent_preferences_1[0].consent_version as consentVersion,
+    unstruct_event_com_fueledanalytics_fueled_consent_preferences_1[0].domains_applied as domainsApplied,
+    unstruct_event_com_fueledanalytics_fueled_consent_preferences_1[0].event_type as eventType,
+    unstruct_event_com_fueledanalytics_fueled_consent_preferences_1[0].gdpr_applies as gdprApplies,
+    unstruct_event_com_fueledanalytics_fueled_cmp_visible_1[0]:elapsed_time as elapsedTime
 
   from prep
 
@@ -157,11 +157,11 @@ select
   event_fingerprint,
   true_tstamp,
   load_tstamp,
-  contexts_com_snowplowanalytics_snowplow_web_page_1,
-  object_construct('basisForProcessing', basisForProcessing,'consentScopes', consentScopes, 'consentUrl', consentUrl, 'consentVersion', consentVersion, 'domainsApplied', domainsApplied, 'eventType', eventType, 'gdprApplies', gdprApplies) as unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1,
-  object_construct_keep_null('elapsedTime', elapsedTime) as unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1,
-  contexts_com_iab_snowplow_spiders_and_robots_1,
-  contexts_com_snowplowanalytics_snowplow_ua_parser_context_1,
+  contexts_com_fueledanalytics_fueled_web_page_1,
+  object_construct('basisForProcessing', basisForProcessing,'consentScopes', consentScopes, 'consentUrl', consentUrl, 'consentVersion', consentVersion, 'domainsApplied', domainsApplied, 'eventType', eventType, 'gdprApplies', gdprApplies) as unstruct_event_com_fueledanalytics_fueled_consent_preferences_1,
+  object_construct_keep_null('elapsedTime', elapsedTime) as unstruct_event_com_fueledanalytics_fueled_cmp_visible_1,
+  contexts_com_iab_fueled_spiders_and_robots_1,
+  contexts_com_fueledanalytics_fueled_ua_parser_context_1,
   contexts_nl_basjes_yauaa_context_1
 
 from flatten

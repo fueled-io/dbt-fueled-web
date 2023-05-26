@@ -1,3 +1,3 @@
 select *
 
-from {{ ref('snowplow_web_consent_scope_status') }}
+from {{ ref('fueled_web_consent_scope_status') }}

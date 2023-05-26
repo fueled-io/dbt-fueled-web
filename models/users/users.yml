@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: snowplow_web_users
+  - name: fueled_web_users
     description: '{{ doc("table_users") }}'
     columns:
       - name: user_id

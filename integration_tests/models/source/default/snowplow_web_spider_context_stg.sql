@@ -6,4 +6,4 @@ select
   reason,
   spiderOrRobot::boolean as spider_or_robot
 
-from {{ ref('snowplow_web_spider_context') }}
+from {{ ref('fueled_web_spider_context') }}

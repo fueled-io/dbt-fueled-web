@@ -1,6 +1,6 @@
 {{
   config(
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
@@ -17,7 +17,7 @@ select
   a.last_page_urlquery,
   a.last_page_urlfragment
 
-from {{ ref('snowplow_web_users_sessions_this_run') }} a
+from {{ ref('fueled_web_users_sessions_this_run') }} a
 
-inner join {{ ref('snowplow_web_users_aggs') }} b
+inner join {{ ref('fueled_web_users_aggs') }} b
 on a.domain_sessionid = b.last_domain_sessionid

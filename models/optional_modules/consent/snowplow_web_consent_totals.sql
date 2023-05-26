@@ -1,7 +1,7 @@
 {{
   config(
     materialized='table',
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
@@ -22,7 +22,7 @@ with totals as (
           and last_consent_event_type <> 'expired'
           and {{ dateadd('year', '1', 'last_consent_event_tstamp') }} > current_date then 1 end) as expires_in_six_months
 
-  from {{ ref('snowplow_web_consent_users') }}
+  from {{ ref('fueled_web_consent_users') }}
 
   where last_consent_event_type is not null
 
@@ -43,7 +43,7 @@ select
   t.implicit_consent,
   t.expires_in_six_months
 
-from {{ ref('snowplow_web_consent_versions') }} v
+from {{ ref('fueled_web_consent_versions') }} v
 
 left join totals t
 on t.last_consent_version = v.consent_version

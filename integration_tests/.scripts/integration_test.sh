@@ -23,29 +23,29 @@ fi
 
 for db in ${DATABASES[@]}; do
 
-  echo "Snowplow web integration tests: Seeding data"
+  echo "Fueled web integration tests: Seeding data"
 
   eval "dbt seed --target $db --full-refresh" || exit 1;
 
-  echo "Snowplow web integration tests: Execute models - run 1/4 (no contexts)"
+  echo "Fueled web integration tests: Execute models - run 1/4 (no contexts)"
 
-  eval "dbt run --target $db --full-refresh --vars '{snowplow__allow_refresh: true, snowplow__backfill_limit_days: 243, snowplow__enable_iab: false, snowplow__enable_ua: false, snowplow__enable_yauaa: false }'" || exit 1;
+  eval "dbt run --target $db --full-refresh --vars '{fueled__allow_refresh: true, fueled__backfill_limit_days: 243, fueled__enable_iab: false, fueled__enable_ua: false, fueled__enable_yauaa: false }'" || exit 1;
 
-  echo "Snowplow web integration tests: Execute models - run 1/4"
+  echo "Fueled web integration tests: Execute models - run 1/4"
 
-  eval "dbt run --target $db --full-refresh --vars '{snowplow__allow_refresh: true, snowplow__backfill_limit_days: 243}'" || exit 1;
+  eval "dbt run --target $db --full-refresh --vars '{fueled__allow_refresh: true, fueled__backfill_limit_days: 243}'" || exit 1;
 
   for i in {2..4}
   do
-    echo "Snowplow web integration tests: Execute models - run $i/4"
+    echo "Fueled web integration tests: Execute models - run $i/4"
 
     eval "dbt run --target $db" || exit 1;
   done
 
-  echo "Snowplow web integration tests: Test models"
+  echo "Fueled web integration tests: Test models"
 
   eval "dbt test --target $db --store-failures" || exit 1;
 
-  echo "Snowplow web integration tests: All tests passed"
+  echo "Fueled web integration tests: All tests passed"
 
 done

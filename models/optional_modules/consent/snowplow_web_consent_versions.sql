@@ -4,13 +4,13 @@
     unique_key='consent_version',
     sort = 'version_start_tstamp',
     dist = 'consent_version',
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
 
 {% if is_incremental() %}
-{%- set lower_limit, upper_limit = snowplow_utils.return_limits_from_model(this,
+{%- set lower_limit, upper_limit = fueled_utils.return_limits_from_model(this,
                                                                           'last_allow_all_event',
                                                                           'last_allow_all_event') %}
 {% endif %}
@@ -25,7 +25,7 @@ with consent_versions as (
     min(derived_tstamp) as version_start_tstamp,
     max(load_tstamp) as last_allow_all_event
 
-  from {{ ref('snowplow_web_consent_log') }}
+  from {{ ref('fueled_web_consent_log') }}
 
   where event_name <> 'cmp_visible' and event_type = 'allow_all'
 

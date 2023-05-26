@@ -110,7 +110,7 @@ The specific fields for each warehouse (see macro code for values).
 
 {% docs macro_bq_context_fields %}
 {% raw %}		
-This macro is used to return the appropriate field and type mapping for use in `snowplow_utils.get_optional_fields`.
+This macro is used to return the appropriate field and type mapping for use in `fueled_utils.get_optional_fields`.
 
 #### Returns
 
@@ -120,10 +120,10 @@ The specific fields and their type for the context (see macro code for values).
 
 {% docs macro_allow_refresh %}
 {% raw %}		
-This macro is used to determine if a full-refresh is allowed (depending on the environment), using the `snowplow__allow_refresh` variable.
+This macro is used to determine if a full-refresh is allowed (depending on the environment), using the `fueled__allow_refresh` variable.
 
 #### Returns
-`snowplow__allow_refresh` if environment is not `dev`, `none` otherwise.
+`fueled__allow_refresh` if environment is not `dev`, `none` otherwise.
 
 {% endraw %}
 {% enddocs %}

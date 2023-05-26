@@ -4,7 +4,7 @@
   )
 }}
 
-{%- set lower_limit, upper_limit = snowplow_utils.return_limits_from_model(ref('snowplow_web_base_sessions_this_run'),
+{%- set lower_limit, upper_limit = fueled_utils.return_limits_from_model(ref('fueled_web_base_sessions_this_run'),
                                                                           'start_tstamp',
                                                                           'end_tstamp') %}
 
@@ -22,7 +22,7 @@ with consent_pref as (
     gdpr_applies,
     row_number() over (partition by root_id order by root_tstamp) dedupe_index
 
-  from {{ var('snowplow__consent_preferences') }}
+  from {{ var('fueled__consent_preferences') }}
 
   where root_tstamp >= {{ lower_limit }}
   and root_tstamp <= {{ upper_limit }}
@@ -37,7 +37,7 @@ with consent_pref as (
     elapsed_time,
     row_number() over (partition by root_id order by root_tstamp) dedupe_index
 
-  from {{ var('snowplow__consent_cmp_visible') }}
+  from {{ var('fueled__consent_cmp_visible') }}
 
   where root_tstamp >= {{ lower_limit }}
   and root_tstamp <= {{ upper_limit }}
@@ -63,7 +63,7 @@ with consent_pref as (
     coalesce(p.gdpr_applies, false) as gdpr_applies,
     v.elapsed_time as cmp_load_time
 
-  from {{ ref("snowplow_web_base_events_this_run") }} as e
+  from {{ ref("fueled_web_base_events_this_run") }} as e
 
   left join consent_pref p
     on e.event_id = p.root_id
@@ -77,4 +77,4 @@ with consent_pref as (
 
   where event_name in ('cmp_visible', 'consent_preferences')
 
-  and {{ snowplow_utils.is_run_with_new_events('snowplow_web') }} --returns false if run doesn't contain new events.
+  and {{ fueled_utils.is_run_with_new_events('fueled_web') }} --returns false if run doesn't contain new events.

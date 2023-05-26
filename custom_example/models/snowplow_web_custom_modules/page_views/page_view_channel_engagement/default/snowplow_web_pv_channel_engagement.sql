@@ -1,4 +1,4 @@
---Using `snowplow_optimize` config to reduce table scans. Could also use the standard `incremental` materialization.
+--Using `fueled_optimize` config to reduce table scans. Could also use the standard `incremental` materialization.
 
 {{
   config(
@@ -7,7 +7,7 @@
     upsert_date_key='start_tstamp',
     sort='start_tstamp',
     dist='page_view_id',
-    snowplow_optimize=true
+    fueled_optimize=true
   )
 }}
 
@@ -27,15 +27,15 @@ with link_clicks as (
       rows between unbounded preceding and unbounded following)
       as first_link_target
 
-  from {{ source('atomic','com_snowplowanalytics_snowplow_link_click_1') }} lc
+  from {{ source('atomic','com_fueledanalytics_fueled_link_click_1') }} lc
 
-  inner join {{ ref('snowplow_web_base_events_this_run' ) }} ev -- Select events from base_events_this_run rather than raw events table
+  inner join {{ ref('fueled_web_base_events_this_run' ) }} ev -- Select events from base_events_this_run rather than raw events table
   on lc.root_id = ev.event_id and lc.root_tstamp = ev.collector_tstamp
 
   where
-    lc.root_tstamp >= (select lower_limit from {{ ref('snowplow_web_base_new_event_limits') }}) -- limit link clicks table scan using the base_new_event_limits table
-    and lc.root_tstamp <= (select upper_limit from {{ ref('snowplow_web_base_new_event_limits') }})
-    and {{ snowplow_utils.is_run_with_new_events('snowplow_web') }} --returns false if run doesn't contain new events.
+    lc.root_tstamp >= (select lower_limit from {{ ref('fueled_web_base_new_event_limits') }}) -- limit link clicks table scan using the base_new_event_limits table
+    and lc.root_tstamp <= (select upper_limit from {{ ref('fueled_web_base_new_event_limits') }})
+    and {{ fueled_utils.is_run_with_new_events('fueled_web') }} --returns false if run doesn't contain new events.
 )
 
 , engagement as (
@@ -74,8 +74,8 @@ with link_clicks as (
     end as is_bounced_page_view,
     (pv.vertical_percentage_scrolled / 100) * 0.3 + (pv.engaged_time_in_s / 600) * 0.7 as engagement_score
 
-  from {{ ref('snowplow_web_page_views_this_run' ) }} pv --select from page_views_this_run rather than derived page_views table
-  where {{ snowplow_utils.is_run_with_new_events('snowplow_web') }} --returns false if run doesn't contain new events.
+  from {{ ref('fueled_web_page_views_this_run' ) }} pv --select from page_views_this_run rather than derived page_views table
+  where {{ fueled_utils.is_run_with_new_events('fueled_web') }} --returns false if run doesn't contain new events.
 )
 
 select

@@ -1,17 +1,17 @@
 {{
   config(
     materialized='incremental',
-    enabled=var('snowplow__enable_custom_example'),
+    enabled=var('fueled__enable_custom_example'),
     unique_key='page_view_id',
     upsert_date_key='start_tstamp',
     sort='start_tstamp',
     dist='page_view_id',
-    partition_by = snowplow_utils.get_value_by_target_type(bigquery_val={
+    partition_by = fueled_utils.get_value_by_target_type(bigquery_val={
       "field": "start_tstamp",
       "data_type": "timestamp"
     }),
     cluster_by=["page_view_id"],
-    snowplow_optimize=true
+    fueled_optimize=true
   )
 }}
 
@@ -40,4 +40,4 @@ select
     else 'others'
   end as channel
 
-from {{ ref('snowplow_web_page_views_this_run' ) }} pv
+from {{ ref('fueled_web_page_views_this_run' ) }} pv

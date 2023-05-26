@@ -2,4 +2,4 @@
 select
   *
 
-from {{ ref('snowplow_web_events') }}
+from {{ ref('fueled_web_events') }}

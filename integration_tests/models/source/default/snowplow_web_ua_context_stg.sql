@@ -14,4 +14,4 @@ select
   useragentPatch::varchar as useragent_patch,
   useragentVersion::varchar as useragent_version
 
-from {{ ref('snowplow_web_ua_context') }}
+from {{ ref('fueled_web_ua_context') }}

@@ -4,7 +4,7 @@ with prep as (
     consent_version,
     count(*) as n_consents
 
-  from {{ ref('snowplow_web_consent_versions')}}
+  from {{ ref('fueled_web_consent_versions')}}
 
   group by 1
 

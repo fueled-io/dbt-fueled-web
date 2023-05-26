@@ -1,7 +1,7 @@
 {{
     config(
         tags=["this_run"],
-        sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+        sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
     )
 }}
 
@@ -14,12 +14,12 @@ with session_firsts as (
         domain_sessionid,
         domain_sessionidx,
 
-        {{ snowplow_utils.current_timestamp_in_utc() }} as model_tstamp,
+        {{ fueled_utils.current_timestamp_in_utc() }} as model_tstamp,
 
         -- user fields
         user_id,
         domain_userid,
-        {% if var('snowplow__session_stitching') %}
+        {% if var('fueled__session_stitching') %}
             -- updated with mapping as part of post hook on derived sessions table
             cast(domain_userid as {{ type_string() }}) as stitched_user_id,
         {% else %}
@@ -81,21 +81,21 @@ with session_firsts as (
         -- optional fields, only populated if enabled.
 
         -- iab enrichment fields
-        {{snowplow_web.get_iab_context_fields()}},
+        {{fueled_web.get_iab_context_fields()}},
 
         -- ua parser enrichment fields
-        {{snowplow_web.get_ua_context_fields()}},
+        {{fueled_web.get_ua_context_fields()}},
 
         -- yauaa enrichment fields
-        {{snowplow_web.get_yauaa_context_fields()}},
+        {{fueled_web.get_yauaa_context_fields()}},
 
         -- event name for use later
         event_name
-    from {{ ref('snowplow_web_base_events_this_run') }}
+    from {{ ref('fueled_web_base_events_this_run') }}
     where
         event_name in ('page_ping', 'page_view')
         and page_view_id is not null
-        {% if var("snowplow__ua_bot_filter", true) %}
+        {% if var("fueled__ua_bot_filter", true) %}
             {{ filter_bots() }}
         {% endif %}
     qualify row_number() over (partition by domain_sessionid order by derived_tstamp, dvce_created_tstamp) = 1
@@ -111,11 +111,11 @@ session_lasts as (
         page_urlpath as last_page_urlpath,
         page_urlquery as last_page_urlquery,
         page_urlfragment as last_page_urlfragment
-    from {{ ref('snowplow_web_base_events_this_run') }}
+    from {{ ref('fueled_web_base_events_this_run') }}
     where
         event_name = 'page_view'
         and page_view_id is not null
-        {% if var("snowplow__ua_bot_filter", true) %}
+        {% if var("fueled__ua_bot_filter", true) %}
             {{ filter_bots() }}
         {% endif %}
     qualify row_number() over (partition by domain_sessionid order by derived_tstamp desc, dvce_created_tstamp) = 1
@@ -129,24 +129,24 @@ session_aggs as (
         -- engagement fields
         count(distinct page_view_id) as page_views,
         -- (hb * (#page pings - # distinct page view ids ON page pings)) + (# distinct page view ids ON page pings * min visit length)
-        ({{ var("snowplow__heartbeat", 10) }} * (
+        ({{ var("fueled__heartbeat", 10) }} * (
                 -- number of (unqiue in heartbeat increment) pages pings following a page ping (gap of heartbeat)
                 count(distinct case
                         when event_name = 'page_ping' then
                         -- need to get a unique list of floored time PER page view, so create a dummy surrogate key...
-                            {{ dbt.concat(['page_view_id', "cast(floor("~snowplow_utils.to_unixtstamp('dvce_created_tstamp')~"/"~var('snowplow__heartbeat', 10)~") as "~dbt.type_string()~")" ]) }}
+                            {{ dbt.concat(['page_view_id', "cast(floor("~fueled_utils.to_unixtstamp('dvce_created_tstamp')~"/"~var('fueled__heartbeat', 10)~") as "~dbt.type_string()~")" ]) }}
                         else
                             null end) -
                     count(distinct case when event_name = 'page_ping' then page_view_id else null end)
                 ))  +
             -- number of page pings following a page view (or no event) (gap of min visit length)
-            (count(distinct case when event_name = 'page_ping' then page_view_id else null end) * {{ var("snowplow__min_visit_length", 5) }}) as engaged_time_in_s,
-        {{ snowplow_utils.timestamp_diff('min(derived_tstamp)', 'max(derived_tstamp)', 'second') }} as absolute_time_in_s
-    from {{ ref('snowplow_web_base_events_this_run') }}
+            (count(distinct case when event_name = 'page_ping' then page_view_id else null end) * {{ var("fueled__min_visit_length", 5) }}) as engaged_time_in_s,
+        {{ fueled_utils.timestamp_diff('min(derived_tstamp)', 'max(derived_tstamp)', 'second') }} as absolute_time_in_s
+    from {{ ref('fueled_web_base_events_this_run') }}
     where
         event_name in ('page_ping', 'page_view')
         and page_view_id is not null
-        {% if var("snowplow__ua_bot_filter", true) %}
+        {% if var("fueled__ua_bot_filter", true) %}
             {{ filter_bots() }}
         {% endif %}
     group by
@@ -163,7 +163,7 @@ select
 
     -- when the session starts with a ping we need to add the min visit length to get when the session actually started
     case when a.event_name = 'page_ping' then
-        {{ snowplow_utils.timestamp_add(datepart="second", interval=-var("snowplow__min_visit_length", 5), tstamp="c.start_tstamp") }}
+        {{ fueled_utils.timestamp_add(datepart="second", interval=-var("fueled__min_visit_length", 5), tstamp="c.start_tstamp") }}
     else c.start_tstamp end as start_tstamp,
     c.end_tstamp,
     a.model_tstamp,
@@ -178,7 +178,7 @@ select
     c.page_views,
     c.engaged_time_in_s,
     -- when the session starts with a ping we need to add the min visit length to get when the session actually started
-    c.absolute_time_in_s + case when a.event_name = 'page_ping' then {{ var("snowplow__min_visit_length", 5) }} else 0 end as absolute_time_in_s,
+    c.absolute_time_in_s + case when a.event_name = 'page_ping' then {{ var("fueled__min_visit_length", 5) }} else 0 end as absolute_time_in_s,
 
     -- first page fields
     a.first_page_title,

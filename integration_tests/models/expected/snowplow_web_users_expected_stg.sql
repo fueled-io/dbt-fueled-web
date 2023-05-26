@@ -1,4 +1,4 @@
 
 select * 
 
-from {{ ref('snowplow_web_users_expected') }}
+from {{ ref('fueled_web_users_expected') }}

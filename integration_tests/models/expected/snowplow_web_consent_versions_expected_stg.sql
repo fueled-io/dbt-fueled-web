@@ -8,4 +8,4 @@ select
   cast(is_latest_version as {{ dbt.type_boolean() }}) as is_latest_version,
   cast(last_allow_all_event as {{ dbt.type_timestamp() }}) as last_allow_all_event
 
-from {{ ref('snowplow_web_consent_versions_expected') }}
+from {{ ref('fueled_web_consent_versions_expected') }}

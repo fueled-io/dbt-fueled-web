@@ -1,6 +1,6 @@
 {{
   config(
-    enabled=(var('snowplow__enable_yauaa', false) and target.type in ['redshift', 'postgres'] | as_bool())
+    enabled=(var('fueled__enable_yauaa', false) and target.type in ['redshift', 'postgres'] | as_bool())
   )
 }}
 
@@ -31,14 +31,14 @@ with base as (
     ya.operating_system_version,
     row_number() over (partition by pv.page_view_id order by pv.collector_tstamp) as dedupe_index
 
-  from {{ var('snowplow__yauaa_context') }} ya
+  from {{ var('fueled__yauaa_context') }} ya
 
-  inner join {{ ref('snowplow_web_page_view_events') }} pv
+  inner join {{ ref('fueled_web_page_view_events') }} pv
   on ya.root_id = pv.event_id
   and ya.root_tstamp = pv.collector_tstamp
 
-  where ya.root_tstamp >= (select lower_limit from {{ ref('snowplow_web_pv_limits') }})
-    and ya.root_tstamp <= (select upper_limit from {{ ref('snowplow_web_pv_limits') }})
+  where ya.root_tstamp >= (select lower_limit from {{ ref('fueled_web_pv_limits') }})
+    and ya.root_tstamp <= (select upper_limit from {{ ref('fueled_web_pv_limits') }})
 
 )
 

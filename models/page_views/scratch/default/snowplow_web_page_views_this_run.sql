@@ -29,7 +29,7 @@ select
   ev.derived_tstamp,
   ev.start_tstamp,
   coalesce(t.end_tstamp, ev.derived_tstamp) as end_tstamp, -- only page views with pings will have a row in table t
-  {{ snowplow_utils.current_timestamp_in_utc() }} as model_tstamp,
+  {{ fueled_utils.current_timestamp_in_utc() }} as model_tstamp,
 
   coalesce(t.engaged_time_in_s, 0) as engaged_time_in_s, -- where there are no pings, engaged time is 0.
   {{ datediff('ev.derived_tstamp', 'coalesce(t.end_tstamp, ev.derived_tstamp)', 'second') }} as absolute_time_in_s,
@@ -93,39 +93,39 @@ select
   -- optional fields, only populated if enabled.
 
   -- iab enrichment fields: set iab variable to true to enable
-  {{snowplow_web.get_iab_context_fields('iab')}},
+  {{fueled_web.get_iab_context_fields('iab')}},
 
   -- ua parser enrichment fields
-  {{snowplow_web.get_ua_context_fields('ua')}},
+  {{fueled_web.get_ua_context_fields('ua')}},
 
   -- yauaa enrichment fields
-  {{snowplow_web.get_yauaa_context_fields('ya')}}
+  {{fueled_web.get_yauaa_context_fields('ya')}}
 
-from {{ ref('snowplow_web_page_view_events') }} ev
+from {{ ref('fueled_web_page_view_events') }} ev
 
-left join {{ ref('snowplow_web_pv_engaged_time') }} t
-on ev.page_view_id = t.page_view_id {% if var('snowplow__limit_page_views_to_session', true) %} and ev.domain_sessionid = t.domain_sessionid {% endif %}
+left join {{ ref('fueled_web_pv_engaged_time') }} t
+on ev.page_view_id = t.page_view_id {% if var('fueled__limit_page_views_to_session', true) %} and ev.domain_sessionid = t.domain_sessionid {% endif %}
 
-left join {{ ref('snowplow_web_pv_scroll_depth') }} sd
-on ev.page_view_id = sd.page_view_id {% if var('snowplow__limit_page_views_to_session', true) %} and ev.domain_sessionid = sd.domain_sessionid {% endif %}
+left join {{ ref('fueled_web_pv_scroll_depth') }} sd
+on ev.page_view_id = sd.page_view_id {% if var('fueled__limit_page_views_to_session', true) %} and ev.domain_sessionid = sd.domain_sessionid {% endif %}
 
-{% if var('snowplow__enable_iab', false) -%}
+{% if var('fueled__enable_iab', false) -%}
 
-  left join {{ ref('snowplow_web_pv_iab') }} iab
+  left join {{ ref('fueled_web_pv_iab') }} iab
   on ev.page_view_id = iab.page_view_id
 
 {% endif -%}
 
-{% if var('snowplow__enable_ua', false) -%}
+{% if var('fueled__enable_ua', false) -%}
 
-  left join {{ ref('snowplow_web_pv_ua_parser') }} ua
+  left join {{ ref('fueled_web_pv_ua_parser') }} ua
   on ev.page_view_id = ua.page_view_id
 
 {% endif -%}
 
-{% if var('snowplow__enable_yauaa', false) -%}
+{% if var('fueled__enable_yauaa', false) -%}
 
-  left join {{ ref('snowplow_web_pv_yauaa') }} ya
+  left join {{ ref('fueled_web_pv_yauaa') }} ya
   on ev.page_view_id = ya.page_view_id
 
 {%- endif -%}

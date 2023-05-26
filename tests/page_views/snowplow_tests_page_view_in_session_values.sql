@@ -6,7 +6,7 @@ with prep as (
     count(*) - count(distinct page_view_in_session_index)  as all_minus_dist_pvisi,
     count(*) - count(distinct page_view_id) as all_minus_dist_pvids 
 
-  from {{ ref('snowplow_web_page_views') }}
+  from {{ ref('fueled_web_page_views') }}
   group by 1
 )
 

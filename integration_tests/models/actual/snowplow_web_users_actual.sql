@@ -58,4 +58,4 @@ select
   mkt_clickid,
   mkt_network
 
-from {{ ref('snowplow_web_users') }}
+from {{ ref('fueled_web_users') }}

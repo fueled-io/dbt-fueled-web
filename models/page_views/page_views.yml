@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: snowplow_web_page_views
+  - name: fueled_web_page_views
     description: '{{ doc("table_page_views") }}'
     columns:
       - name: page_view_id

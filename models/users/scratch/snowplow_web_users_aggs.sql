@@ -1,13 +1,13 @@
 {{
   config(
-    partition_by = snowplow_utils.get_value_by_target_type(bigquery_val={
+    partition_by = fueled_utils.get_value_by_target_type(bigquery_val={
       "field": "start_tstamp",
       "data_type": "timestamp"
     }),
-    cluster_by=snowplow_utils.get_value_by_target_type(bigquery_val=["domain_userid"]),
+    cluster_by=fueled_utils.get_value_by_target_type(bigquery_val=["domain_userid"]),
     sort='domain_userid',
     dist='domain_userid',
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
@@ -24,6 +24,6 @@ select
   count(distinct domain_sessionid) as sessions,
   sum(engaged_time_in_s) as engaged_time_in_s
 
-from {{ ref('snowplow_web_users_sessions_this_run') }}
+from {{ ref('fueled_web_users_sessions_this_run') }}
 
 group by 1,2,3

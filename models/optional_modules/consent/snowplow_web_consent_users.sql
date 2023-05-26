@@ -4,13 +4,13 @@
     unique_key='domain_userid',
     sort = 'last_consent_event_tstamp',
     dist = 'domain_userid',
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
 
 {% if is_incremental() %}
-{%- set lower_limit, upper_limit = snowplow_utils.return_limits_from_model(this,
+{%- set lower_limit, upper_limit = fueled_utils.return_limits_from_model(this,
                                                                           'last_processed_event',
                                                                           'last_processed_event') %}
 {% endif %}
@@ -27,7 +27,7 @@ with base as (
     max(case when event_name = 'cmp_visible' then derived_tstamp end) as last_cmp_event_tstamp,
     row_number() over(partition by domain_userid order by max(load_tstamp) desc) as latest_event_by_user_rank
 
-  from {{ ref('snowplow_web_consent_log') }}
+  from {{ ref('fueled_web_consent_log') }}
 
   {% if is_incremental() %} -- and it has not been processed yet
   where load_tstamp > {{ upper_limit }}
@@ -49,7 +49,7 @@ with base as (
     domains_applied as last_domains_applied,
     row_number() over(partition by domain_userid order by load_tstamp desc) as latest_consent_event_by_user_rank
 
-  from {{ ref('snowplow_web_consent_log') }}
+  from {{ ref('fueled_web_consent_log') }}
 
   where event_name = 'consent_preferences'
 
@@ -82,7 +82,7 @@ from base b
 left join latest_consents l
 on b.domain_userid = l.domain_userid
 
-left join {{ ref('snowplow_web_consent_versions')}} v
+left join {{ ref('fueled_web_consent_versions')}} v
 on v.consent_version = l.last_consent_version
 
 left join {{ this }} t
@@ -114,7 +114,7 @@ from base b
 left join latest_consents l
 on b.domain_userid = l.domain_userid
 
-left join {{ ref('snowplow_web_consent_versions') }} v
+left join {{ ref('fueled_web_consent_versions') }} v
 on v.consent_version = l.last_consent_version
 
 where (l.latest_consent_event_by_user_rank = 1 or l.domain_userid is null)

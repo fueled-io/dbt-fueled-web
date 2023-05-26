@@ -130,4 +130,4 @@ select
   operating_system_name_version,
   operating_system_version
 
-from {{ ref('snowplow_web_sessions') }}
+from {{ ref('fueled_web_sessions') }}

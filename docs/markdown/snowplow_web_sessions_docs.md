@@ -1,6 +1,6 @@
 {% docs table_sessions_this_run %}
 
-This staging table contains all the sessions for the given run of the Web model. It possess all the same columns as `snowplow_web_sessions`. If building a custom module that requires session level data, this is the table you should reference.
+This staging table contains all the sessions for the given run of the Web model. It possess all the same columns as `fueled_web_sessions`. If building a custom module that requires session level data, this is the table you should reference.
 
 {% enddocs %}
 

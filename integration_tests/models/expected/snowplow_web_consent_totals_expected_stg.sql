@@ -18,4 +18,4 @@ select
   implicit_consent,
   expires_in_six_months
 
-from {{ ref('snowplow_web_consent_totals_expected') }}
+from {{ ref('fueled_web_consent_totals_expected') }}

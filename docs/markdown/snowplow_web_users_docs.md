@@ -1,7 +1,7 @@
 
 {% docs table_users_this_run %}
 
-This staging table contains all the users for the given run of the Web model. It possess all the same columns as `snowplow_web_users`. If building a custom module that requires session level data, this is the table you should reference.
+This staging table contains all the users for the given run of the Web model. It possess all the same columns as `fueled_web_users`. If building a custom module that requires session level data, this is the table you should reference.
 
 {% enddocs %}
 

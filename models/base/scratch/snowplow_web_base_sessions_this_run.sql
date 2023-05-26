@@ -2,15 +2,15 @@
   config(
     tags=["this_run"],
     post_hook=[
-    "{{ snowplow_utils.quarantine_sessions('snowplow_web', var('snowplow__max_session_days')) }}"
+    "{{ fueled_utils.quarantine_sessions('fueled_web', var('fueled__max_session_days')) }}"
     ],
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
 {%- set lower_limit,
         upper_limit,
-        session_start_limit = snowplow_utils.return_base_new_event_limits(ref('snowplow_web_base_new_event_limits')) %}
+        session_start_limit = fueled_utils.return_base_new_event_limits(ref('fueled_web_base_new_event_limits')) %}
 
 select
   s.session_id,
@@ -20,7 +20,7 @@ select
   -- This ensures we don't accidentally process events after upper_limit
   case when s.end_tstamp > {{ upper_limit }} then {{ upper_limit }} else s.end_tstamp end as end_tstamp
 
-from {{ ref('snowplow_web_base_sessions_lifecycle_manifest')}} s
+from {{ ref('fueled_web_base_sessions_lifecycle_manifest')}} s
 
 where
 -- General window of start_tstamps to limit table scans. Logic complicated by backfills.

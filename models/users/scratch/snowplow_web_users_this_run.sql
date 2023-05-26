@@ -1,7 +1,7 @@
 {{
   config(
     tags=["this_run"],
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
@@ -13,7 +13,7 @@ select
 
   b.start_tstamp,
   b.end_tstamp,
-  {{ snowplow_utils.current_timestamp_in_utc() }} as model_tstamp,
+  {{ fueled_utils.current_timestamp_in_utc() }} as model_tstamp,
 
   -- engagement fields
   b.page_views,
@@ -64,10 +64,10 @@ select
   a.mkt_clickid,
   a.mkt_network
 
-from {{ ref('snowplow_web_users_aggs') }} as b
+from {{ ref('fueled_web_users_aggs') }} as b
 
-inner join {{ ref('snowplow_web_users_sessions_this_run') }} as a
+inner join {{ ref('fueled_web_users_sessions_this_run') }} as a
 on a.domain_sessionid = b.first_domain_sessionid
 
-inner join {{ ref('snowplow_web_users_lasts') }} c
+inner join {{ ref('fueled_web_users_lasts') }} c
 on b.domain_userid = c.domain_userid

@@ -1,4 +1,4 @@
-name: 'snowplow_web_integration_tests'
+name: 'fueled_web_integration_tests'
 version: '0.14.1'
 config-version: 2
 
@@ -6,7 +6,7 @@ profile: 'integration_tests'
 
 dispatch:
   - macro_namespace: dbt
-    search_order: ['snowplow_utils', 'dbt']
+    search_order: ['fueled_utils', 'dbt']
 
 model-paths: ["models"]
 analysis-paths: ["analysis"]
@@ -25,7 +25,7 @@ quoting:
   schema: false
 
 models:
-  snowplow_web_integration_tests:
+  fueled_web_integration_tests:
     bind: false
     +schema: "fueled_web_int_tests"
     source:
@@ -38,13 +38,13 @@ models:
       snowflake:
         +enabled: "{{ target.type == 'snowflake' | as_bool() }}"
     dummy_custom_module:
-      +tags: snowplow_web_incremental
-  snowplow_web:
+      +tags: fueled_web_incremental
+  fueled_web:
     optional_modules:
       consent:
         enabled: true
         +schema: "derived"
-        +tags: ["snowplow_web_incremental", "derived"]
+        +tags: ["fueled_web_incremental", "derived"]
         scratch:
           +schema: "scratch"
           +tags: "scratch"
@@ -58,28 +58,28 @@ models:
             enabled: "{{ target.type == 'snowflake' | as_bool() }}"
 
 vars:
-  snowplow__enable_custom_example: false
-  snowplow_web:
-    snowplow__events: "{{ ref('snowplow_web_events_stg') }}"
-    snowplow__page_view_context: "{{ ref('snowplow_web_page_view_context_stg') }}"
-    snowplow__consent_cmp_visible: "{{ ref('snowplow_web_consent_cmp_visible_stg') }}"
-    snowplow__consent_preferences: "{{ ref('snowplow_web_consent_preferences_stg') }}"
-    snowplow__iab_context: "{{ ref('snowplow_web_spider_context_stg') }}"
-    snowplow__ua_parser_context: "{{ ref('snowplow_web_ua_context_stg') }}"
-    snowplow__yauaa_context: "{{ ref('snowplow_web_yauaa_context_stg') }}"
-    snowplow__start_date: "2020-07-03"
-    snowplow__backfill_limit_days: 2
-    snowplow__databricks_catalog: 'atomic'
-    snowplow__enable_iab: true
-    snowplow__enable_ua: true
-    snowplow__enable_yauaa: true
+  fueled__enable_custom_example: false
+  fueled_web:
+    fueled__events: "{{ ref('fueled_web_events_stg') }}"
+    fueled__page_view_context: "{{ ref('fueled_web_page_view_context_stg') }}"
+    fueled__consent_cmp_visible: "{{ ref('fueled_web_consent_cmp_visible_stg') }}"
+    fueled__consent_preferences: "{{ ref('fueled_web_consent_preferences_stg') }}"
+    fueled__iab_context: "{{ ref('fueled_web_spider_context_stg') }}"
+    fueled__ua_parser_context: "{{ ref('fueled_web_ua_context_stg') }}"
+    fueled__yauaa_context: "{{ ref('fueled_web_yauaa_context_stg') }}"
+    fueled__start_date: "2020-07-03"
+    fueled__backfill_limit_days: 2
+    fueled__databricks_catalog: 'atomic'
+    fueled__enable_iab: true
+    fueled__enable_ua: true
+    fueled__enable_yauaa: true
 
 seeds:
   quote_columns: false
-  snowplow_web_integration_tests:
+  fueled_web_integration_tests:
     +schema: "fueled_web_int_tests"
     source:
-      snowplow_web_events:
+      fueled_web_events:
         +column_types:
           app_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
           etl_tstamp: timestamp
@@ -138,7 +138,7 @@ seeds:
           derived_tstamp: timestamp
           true_tstamp: timestamp
           load_tstamp: timestamp
-      snowplow_web_consent_preferences:
+      fueled_web_consent_preferences:
         +column_types:
           root_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
           root_tstamp: timestamp
@@ -149,16 +149,16 @@ seeds:
           domains_applied: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
           event_type: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
           gdpr_applies: boolean
-      snowplow_web_consent_cmp_visible:
+      fueled_web_consent_cmp_visible:
         +column_types:
           root_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
           root_tstamp: timestamp
           elapsed_time: float
-      snowplow_web_spider_context:
+      fueled_web_spider_context:
         +enabled: "{{ target.type in ['redshift', 'postgres'] | as_bool() }}"
-      snowplow_web_ua_context:
+      fueled_web_ua_context:
         +enabled: "{{ target.type in ['redshift', 'postgres'] | as_bool() }}"
-      snowplow_web_yauaa_context:
+      fueled_web_yauaa_context:
         +enabled: "{{ target.type in ['redshift', 'postgres'] | as_bool() }}"
 
 
@@ -166,7 +166,7 @@ seeds:
     expected:
       bigquery:
         +enabled: "{{ target.type == 'bigquery' | as_bool() }}"
-        snowplow_web_page_views_expected:
+        fueled_web_page_views_expected:
           +column_types:
             horizontal_percentage_scrolled: float
             vertical_percentage_scrolled: float
@@ -220,7 +220,7 @@ seeds:
             operating_system_name: string
             operating_system_name_version: string
             operating_system_version: string
-        snowplow_web_sessions_expected:
+        fueled_web_sessions_expected:
           +column_types:
             app_id: string
             start_tstamp: timestamp
@@ -271,7 +271,7 @@ seeds:
             operating_system_name: string
             operating_system_name_version: string
             operating_system_version: string
-        snowplow_web_users_expected:
+        fueled_web_users_expected:
           +column_types:
             start_tstamp: timestamp
             end_tstamp: timestamp
@@ -284,7 +284,7 @@ seeds:
             refr_term: string
             mkt_term: string
             mkt_content: string
-        snowplow_web_consent_cmp_stats_expected:
+        fueled_web_consent_cmp_stats_expected:
           +column_types:
             event_id: string
             domain_userid: string
@@ -294,7 +294,7 @@ seeds:
             first_consent_event_tstamp: timestamp
             first_consent_event_type: string
             cmp_interaction_time: float
-        snowplow_web_consent_log_expected:
+        fueled_web_consent_log_expected:
           +column_types:
             event_id: string
             domain_userid: string
@@ -314,11 +314,11 @@ seeds:
             gdpr_applies: boolean
             cmp_load_time: float
             derived_tstamp_date: date
-        snowplow_web_consent_scope_status_expected:
+        fueled_web_consent_scope_status_expected:
           +column_types:
             scope: string
             total: integer
-        snowplow_web_consent_totals_expected:
+        fueled_web_consent_totals_expected:
           +column_types:
             consent_version: string
             version_start_tstamp: timestamp
@@ -337,7 +337,7 @@ seeds:
             withdrawn: integer
             implicit_consent: integer
             expires_in_six_months: integer
-        snowplow_web_consent_users_expected:
+        fueled_web_consent_users_expected:
           +column_types:
             domain_userid: string
             user_id: string
@@ -353,7 +353,7 @@ seeds:
             last_domains_applied: string
             last_processed_event: timestamp
             is_latest_version: boolean
-        snowplow_web_consent_versions_expected:
+        fueled_web_consent_versions_expected:
           +column_types:
             consent_version: string
             version_start_tstamp: timestamp
@@ -364,7 +364,7 @@ seeds:
             last_allow_all_event: timestamp
       databricks:
         +enabled: "{{ target.type in ['databricks', 'spark'] | as_bool() }}"
-        snowplow_web_page_views_expected:
+        fueled_web_page_views_expected:
           +column_types:
             horizontal_percentage_scrolled: float
             vertical_percentage_scrolled: float
@@ -418,7 +418,7 @@ seeds:
             operating_system_name: string
             operating_system_name_version: string
             operating_system_version: string
-        snowplow_web_sessions_expected:
+        fueled_web_sessions_expected:
           +column_types:
             app_id: string
             start_tstamp: timestamp
@@ -469,7 +469,7 @@ seeds:
             operating_system_name: string
             operating_system_name_version: string
             operating_system_version: string
-        snowplow_web_users_expected:
+        fueled_web_users_expected:
           +column_types:
             start_tstamp: timestamp
             end_tstamp: timestamp
@@ -482,7 +482,7 @@ seeds:
             refr_term: string
             mkt_term: string
             mkt_content: string
-        snowplow_web_consent_cmp_stats_expected:
+        fueled_web_consent_cmp_stats_expected:
           +column_types:
             event_id: string
             domain_userid: string
@@ -492,7 +492,7 @@ seeds:
             cmp_tstamp: timestamp
             first_consent_event_tstamp: timestamp
             first_consent_event_type: string
-        snowplow_web_consent_log_expected:
+        fueled_web_consent_log_expected:
           +column_types:
             event_id: string
             domain_userid: string
@@ -512,11 +512,11 @@ seeds:
             gdpr_applies: boolean
             cmp_load_time: float
             derived_tstamp_date: date
-        snowplow_web_consent_scope_status_expected:
+        fueled_web_consent_scope_status_expected:
           +column_types:
             scope: string
             total: integer
-        snowplow_web_consent_totals_expected:
+        fueled_web_consent_totals_expected:
           +column_types:
             consent_version: string
             version_start_tstamp: timestamp
@@ -535,7 +535,7 @@ seeds:
             withdrawn: integer
             implicit_consent: integer
             expires_in_six_months: integer
-        snowplow_web_consent_users_expected:
+        fueled_web_consent_users_expected:
           +column_types:
             domain_userid: string
             user_id: string
@@ -551,7 +551,7 @@ seeds:
             last_domains_applied: string
             last_processed_event: timestamp
             is_latest_version: boolean
-        snowplow_web_consent_versions_expected:
+        fueled_web_consent_versions_expected:
           +column_types:
             consent_version: string
             version_start_tstamp: timestamp
@@ -562,7 +562,7 @@ seeds:
             last_allow_all_event: timestamp
       default:
         +enabled: "{{ target.type in ['redshift', 'postgres'] | as_bool() }}"
-        snowplow_web_page_views_expected:
+        fueled_web_page_views_expected:
           +column_types:
             app_id: varchar
             horizontal_percentage_scrolled: float
@@ -617,7 +617,7 @@ seeds:
             operating_system_name: varchar
             operating_system_name_version: varchar
             operating_system_version: varchar
-        snowplow_web_sessions_expected:
+        fueled_web_sessions_expected:
           +column_types:
             app_id: varchar
             start_tstamp: timestamp
@@ -669,7 +669,7 @@ seeds:
             operating_system_name: varchar
             operating_system_name_version: varchar
             operating_system_version: varchar
-        snowplow_web_users_expected:
+        fueled_web_users_expected:
           +column_types:
             start_tstamp: timestamp
             end_tstamp: timestamp
@@ -683,7 +683,7 @@ seeds:
             refr_term: varchar
             mkt_term: varchar
             mkt_content: varchar
-        snowplow_web_consent_cmp_stats_expected:
+        fueled_web_consent_cmp_stats_expected:
           +column_types:
             event_id: varchar
             domain_userid: varchar
@@ -694,7 +694,7 @@ seeds:
             first_consent_event_tstamp: timestamp
             first_consent_event_type: varchar
             cmp_interaction_time: float
-        snowplow_web_consent_log_expected:
+        fueled_web_consent_log_expected:
           +column_types:
             event_id: varchar
             domain_userid: varchar
@@ -714,11 +714,11 @@ seeds:
             gdpr_applies: boolean
             cmp_load_time: float
             derived_tstamp_date: date
-        snowplow_web_consent_scope_status_expected:
+        fueled_web_consent_scope_status_expected:
           +column_types:
             scope: varchar
             total: integer
-        snowplow_web_consent_totals_expected:
+        fueled_web_consent_totals_expected:
           +column_types:
             consent_version: varchar
             version_start_tstamp: timestamp
@@ -737,7 +737,7 @@ seeds:
             withdrawn: integer
             implicit_consent: integer
             expires_in_six_months: integer
-        snowplow_web_consent_users_expected:
+        fueled_web_consent_users_expected:
           +column_types:
             domain_userid: varchar
             user_id: varchar
@@ -753,7 +753,7 @@ seeds:
             last_domains_applied: varchar
             last_processed_event: timestamp
             is_latest_version: boolean
-        snowplow_web_consent_versions_expected:
+        fueled_web_consent_versions_expected:
           +column_types:
             consent_version: varchar
             version_start_tstamp: timestamp
@@ -764,7 +764,7 @@ seeds:
             last_allow_all_event: timestamp
       snowflake:
         +enabled: "{{ target.type == 'snowflake' | as_bool() }}"
-        snowplow_web_page_views_expected:
+        fueled_web_page_views_expected:
           +column_types:
             app_id: varchar
             horizontal_percentage_scrolled: float
@@ -819,7 +819,7 @@ seeds:
             operating_system_name: varchar
             operating_system_name_version: varchar
             operating_system_version: varchar
-        snowplow_web_sessions_expected:
+        fueled_web_sessions_expected:
           +column_types:
             app_id: varchar
             start_tstamp: timestamp
@@ -871,7 +871,7 @@ seeds:
             operating_system_name: varchar
             operating_system_name_version: varchar
             operating_system_version: varchar
-        snowplow_web_users_expected:
+        fueled_web_users_expected:
           +column_types:
             start_tstamp: timestamp
             end_tstamp: timestamp
@@ -885,7 +885,7 @@ seeds:
             refr_term: varchar
             mkt_term: varchar
             mkt_content: varchar
-        snowplow_web_consent_cmp_stats_expected:
+        fueled_web_consent_cmp_stats_expected:
           +column_types:
             event_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
             domain_userid: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
@@ -896,7 +896,7 @@ seeds:
             first_consent_event_tstamp: timestamp
             first_consent_event_type: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
             cmp_interaction_time: float
-        snowplow_web_consent_log_expected:
+        fueled_web_consent_log_expected:
           +column_types:
             event_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
             domain_userid: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
@@ -916,11 +916,11 @@ seeds:
             gdpr_applies: boolean
             cmp_load_time: float
             derived_tstamp_date: date
-        snowplow_web_consent_scope_status_expected:
+        fueled_web_consent_scope_status_expected:
           +column_types:
             scope: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
             total: integer
-        snowplow_web_consent_totals_expected:
+        fueled_web_consent_totals_expected:
           +column_types:
             consent_version: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
             version_start_tstamp: timestamp
@@ -939,7 +939,7 @@ seeds:
             withdrawn: integer
             implicit_consent: integer
             expires_in_six_months: integer
-        snowplow_web_consent_users_expected:
+        fueled_web_consent_users_expected:
           +column_types:
             domain_userid: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
             user_id: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
@@ -955,7 +955,7 @@ seeds:
             last_domains_applied: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
             last_processed_event: timestamp
             is_latest_version: boolean
-        snowplow_web_consent_versions_expected:
+        fueled_web_consent_versions_expected:
           +column_types:
             consent_version: "{{ 'string' if target.type in ['bigquery', 'databricks', 'spark'] else 'varchar' }}"
             version_start_tstamp: timestamp

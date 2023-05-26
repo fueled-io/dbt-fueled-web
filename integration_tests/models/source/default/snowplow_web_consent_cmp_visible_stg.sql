@@ -4,4 +4,4 @@ select
   root_tstamp::timestamp,
   elapsed_time
 
-from {{ ref('snowplow_web_consent_cmp_visible') }}
+from {{ ref('fueled_web_consent_cmp_visible') }}

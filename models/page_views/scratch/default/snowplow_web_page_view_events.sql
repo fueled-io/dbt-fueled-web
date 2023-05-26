@@ -78,12 +78,12 @@ with page_view_events as (
 
     row_number() over (partition by ev.page_view_id order by ev.derived_tstamp, ev.dvce_created_tstamp) as page_view_id_dedupe_index
 
-  from {{ ref('snowplow_web_base_events_this_run') }} as ev
+  from {{ ref('fueled_web_base_events_this_run') }} as ev
 
   where ev.event_name = 'page_view'
   and ev.page_view_id is not null
 
-  {% if var("snowplow__ua_bot_filter", true) %}
+  {% if var("fueled__ua_bot_filter", true) %}
     {{ filter_bots('ev') }}
   {% endif %}
 )

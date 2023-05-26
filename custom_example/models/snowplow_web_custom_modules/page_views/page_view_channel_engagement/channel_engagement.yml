@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: snowplow_web_pv_channel_engagement
+  - name: fueled_web_pv_channel_engagement
     description: Page view engagement grouped by channel
     columns:
       - name: page_view_id

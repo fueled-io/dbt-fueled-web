@@ -1,4 +1,4 @@
-name: 'snowplow_web'
+name: 'fueled_web'
 version: '0.14.1'
 config-version: 2
 
@@ -8,7 +8,7 @@ profile: 'default'
 
 dispatch:
   - macro_namespace: dbt
-    search_order: ['snowplow_utils', 'dbt']
+    search_order: ['fueled_utils', 'dbt']
 
 model-paths: ["models"]
 test-paths: ["tests"]
@@ -23,69 +23,69 @@ clean-targets:
     - "dbt_packages"
 
 vars:
-  snowplow_web:
+  fueled_web:
     # Sources
-    # snowplow__atomic_schema: 'atomic_data_sample' # Only set if not using 'atomic' schema for Snowplow events data
-    # snowplow__database:  # Only set if not using target.database for Snowplow events data -- WILL BE IGNORED FOR DATABRICKS
-    snowplow__events: "{{ source('atomic', 'events') }}"
-    snowplow__page_view_context: "{{ source('atomic','com_snowplowanalytics_snowplow_web_page_1') }}"
-    snowplow__iab_context: "{{ source('atomic','com_iab_snowplow_spiders_and_robots_1') }}"
-    snowplow__ua_parser_context: "{{ source('atomic','com_snowplowanalytics_snowplow_ua_parser_context_1') }}"
-    snowplow__yauaa_context: "{{ source('atomic','nl_basjes_yauaa_context_1') }}"
-    snowplow__sessions_table: "{{ ref('snowplow_web_sessions') }}" # Change to your custom sessions table if you have disabled the standard sessions table in favour of a custom version. Advanced config.
+    # fueled__atomic_schema: 'atomic_data_sample' # Only set if not using 'atomic' schema for Fueled events data
+    # fueled__database:  # Only set if not using target.database for Fueled events data -- WILL BE IGNORED FOR DATABRICKS
+    fueled__events: "{{ source('atomic', 'events') }}"
+    fueled__page_view_context: "{{ source('atomic','com_fueledanalytics_fueled_web_page_1') }}"
+    fueled__iab_context: "{{ source('atomic','com_iab_fueled_spiders_and_robots_1') }}"
+    fueled__ua_parser_context: "{{ source('atomic','com_fueledanalytics_fueled_ua_parser_context_1') }}"
+    fueled__yauaa_context: "{{ source('atomic','nl_basjes_yauaa_context_1') }}"
+    fueled__sessions_table: "{{ ref('fueled_web_sessions') }}" # Change to your custom sessions table if you have disabled the standard sessions table in favour of a custom version. Advanced config.
     # Variables - Standard Config
-    snowplow__start_date: '2020-01-01'
-    snowplow__min_visit_length: 5
-    snowplow__heartbeat: 10
-    snowplow__backfill_limit_days: 30
-    snowplow__app_id: []
+    fueled__start_date: '2020-01-01'
+    fueled__min_visit_length: 5
+    fueled__heartbeat: 10
+    fueled__backfill_limit_days: 30
+    fueled__app_id: []
     # Setting default values for 3 enrichments below throughout package rather than here
     # Workaround for a bug (https://github.com/dbt-labs/dbt-core/issues/3698).
     # TODO: Return to having default values here once fixed.
-    # snowplow__enable_iab: false
-    # snowplow__enable_ua: false
-    # snowplow__enable_yauaa: false
-    snowplow__ua_bot_filter: true
-    snowplow__derived_tstamp_partitioned: true
-    snowplow__session_stitching: true
-    snowplow__enable_load_tstamp: true # set to false if you are using the postgres loader or earlier than 4.0.0 of the RDB loader
+    # fueled__enable_iab: false
+    # fueled__enable_ua: false
+    # fueled__enable_yauaa: false
+    fueled__ua_bot_filter: true
+    fueled__derived_tstamp_partitioned: true
+    fueled__session_stitching: true
+    fueled__enable_load_tstamp: true # set to false if you are using the postgres loader or earlier than 4.0.0 of the RDB loader
     # Variables - Advanced Config
-    snowplow__lookback_window_hours: 6
-    snowplow__session_lookback_days: 730
-    snowplow__days_late_allowed: 3
-    snowplow__max_session_days: 3
-    snowplow__upsert_lookback_days: 30
-    snowplow__query_tag: "snowplow_dbt"
-    snowplow__dev_target_name: 'dev'
-    snowplow__allow_refresh: false
-    # snowplow__limit_page_views_to_session: true
+    fueled__lookback_window_hours: 6
+    fueled__session_lookback_days: 730
+    fueled__days_late_allowed: 3
+    fueled__max_session_days: 3
+    fueled__upsert_lookback_days: 30
+    fueled__query_tag: "fueled_dbt"
+    fueled__dev_target_name: 'dev'
+    fueled__allow_refresh: false
+    # fueled__limit_page_views_to_session: true
     # Variables - Databricks Only
     # Add the following variable to your dbt project's dbt_project.yml file
-    # Depending on the use case it should either be the catalog (for Unity Catalog users from databricks connector 1.1.1 onwards) or the same value as your snowplow__atomic_schema (unless changed it should be 'atomic')
-    # snowplow__databricks_catalog: 'hive_metastore'
+    # Depending on the use case it should either be the catalog (for Unity Catalog users from databricks connector 1.1.1 onwards) or the same value as your fueled__atomic_schema (unless changed it should be 'atomic')
+    # fueled__databricks_catalog: 'hive_metastore'
     # Variables - Optional Consent model only
-    snowplow__consent_cmp_visible: "{{ source('atomic', 'com_snowplowanalytics_snowplow_cmp_visible_1') }}"
-    snowplow__consent_preferences: "{{ source('atomic', 'com_snowplowanalytics_snowplow_consent_preferences_1') }}"
+    fueled__consent_cmp_visible: "{{ source('atomic', 'com_fueledanalytics_fueled_cmp_visible_1') }}"
+    fueled__consent_preferences: "{{ source('atomic', 'com_fueledanalytics_fueled_consent_preferences_1') }}"
 
 # Completely or partially remove models from the manifest during run start.
 on-run-start:
-  - "{{ snowplow_utils.snowplow_web_delete_from_manifest(var('models_to_remove',[])) }}"
+  - "{{ fueled_utils.fueled_web_delete_from_manifest(var('models_to_remove',[])) }}"
 
 # Update manifest table with last event consumed per sucessfully executed node/model
 on-run-end:
-  - "{{ snowplow_utils.snowplow_incremental_post_hook('snowplow_web') }}"
+  - "{{ fueled_utils.fueled_incremental_post_hook('fueled_web') }}"
 
 
-# Tag 'snowplow_web_incremental' allows snowplow_incremental_post_hook to identify Snowplow models
+# Tag 'fueled_web_incremental' allows fueled_incremental_post_hook to identify Fueled models
 # and add their last sucessfull collector_tstamp to the manifest.
 models:
-  snowplow_web:
+  fueled_web:
     +materialized: table
     +file_format: delta
     +bind: false
     base:
       manifest:
-        +schema: "snowplow_manifest"
+        +schema: "fueled_manifest"
       scratch:
         +schema: "scratch"
         +tags: "scratch"
@@ -103,7 +103,7 @@ models:
 
     page_views:
       +schema: "derived"
-      +tags: "snowplow_web_incremental"
+      +tags: "fueled_web_incremental"
       scratch:
         +schema: "scratch"
         +tags: "scratch"
@@ -117,7 +117,7 @@ models:
           enabled: "{{ target.type == 'snowflake' | as_bool() }}"
     sessions:
       +schema: "derived"
-      +tags: "snowplow_web_incremental"
+      +tags: "fueled_web_incremental"
       scratch:
         +schema: "scratch"
         +tags: "scratch"
@@ -131,10 +131,10 @@ models:
           enabled: "{{ target.type == 'snowflake' | as_bool() }}"
     user_mapping:
       +schema: "derived"
-      +tags: "snowplow_web_incremental"
+      +tags: "fueled_web_incremental"
     users:
       +schema: "derived"
-      +tags: "snowplow_web_incremental"
+      +tags: "fueled_web_incremental"
       scratch:
         +schema: "scratch"
         +tags: "scratch"

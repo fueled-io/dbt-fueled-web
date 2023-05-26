@@ -1,13 +1,13 @@
 {{
   config(
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
 with prep as (
   select
     ev.page_view_id,
-    {% if var('snowplow__limit_page_views_to_session', true) %}
+    {% if var('fueled__limit_page_views_to_session', true) %}
     ev.domain_sessionid,
     {% endif %}
 
@@ -27,19 +27,19 @@ with prep as (
     least(greatest(min(coalesce(ev.pp_yoffset_min, 0)), 0), max(ev.doc_height)) as vmin, -- should be zero (edge case: not zero because the pv event is missing)
     least(greatest(max(coalesce(ev.pp_yoffset_max, 0)), 0), max(ev.doc_height)) as vmax
 
-  from {{ ref('snowplow_web_base_events_this_run') }} as ev
+  from {{ ref('fueled_web_base_events_this_run') }} as ev
 
   where ev.event_name in ('page_view', 'page_ping')
     and ev.page_view_id is not null
     and ev.doc_height > 0 -- exclude problematic (but rare) edge case
     and ev.doc_width > 0 -- exclude problematic (but rare) edge case
 
-  group by 1 {% if var('snowplow__limit_page_views_to_session', true) %}, 2 {% endif %}
+  group by 1 {% if var('fueled__limit_page_views_to_session', true) %}, 2 {% endif %}
 )
 
 select
   page_view_id,
-  {% if var('snowplow__limit_page_views_to_session', true) %}
+  {% if var('fueled__limit_page_views_to_session', true) %}
   domain_sessionid,
   {% endif %}
 

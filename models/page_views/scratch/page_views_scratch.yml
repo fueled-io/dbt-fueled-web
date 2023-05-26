@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: snowplow_web_page_views_this_run
+  - name: fueled_web_page_views_this_run
     description: '{{ doc("table_page_views_this_run") }}'
     columns:
       - name: page_view_id
@@ -234,7 +234,7 @@ models:
         description: '{{ doc("col_operating_system_name_version") }}'
       - name: operating_system_version
         description: '{{ doc("col_operating_system_version") }}'
-  - name: snowplow_web_page_view_events
+  - name: fueled_web_page_view_events
     description: '{{ doc("table_page_view_events") }}'
     columns:
       - name: page_view_id
@@ -246,7 +246,7 @@ models:
               enabled: "{{ target.type in ['redshift', 'postgres'] | as_bool() }}"
           - not_null:
               enabled: "{{ target.type in ['redshift', 'postgres'] | as_bool() }}"
-  - name: snowplow_web_pv_iab
+  - name: fueled_web_pv_iab
     description: '{{ doc("table_pv_iab") }}'
     columns:
       - name: page_view_id
@@ -255,10 +255,10 @@ models:
           - primary-key
         tests:
           - unique:
-              enabled: "{{ var('snowplow__enable_iab', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
+              enabled: "{{ var('fueled__enable_iab', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
           - not_null:
-              enabled: "{{ var('snowplow__enable_iab', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
-  - name: snowplow_web_pv_ua_parser
+              enabled: "{{ var('fueled__enable_iab', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
+  - name: fueled_web_pv_ua_parser
     description: '{{ doc("table_pv_ua_parser") }}'
     columns:
       - name: page_view_id
@@ -267,10 +267,10 @@ models:
           - primary-key
         tests:
           - unique:
-              enabled: "{{ var('snowplow__enable_ua', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
+              enabled: "{{ var('fueled__enable_ua', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
           - not_null:
-              enabled: "{{ var('snowplow__enable_ua', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
-  - name: snowplow_web_pv_yauaa
+              enabled: "{{ var('fueled__enable_ua', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
+  - name: fueled_web_pv_yauaa
     description: '{{ doc("table_pv_yauaa") }}'
     columns:
       - name: page_view_id
@@ -279,42 +279,42 @@ models:
           - primary-key
         tests:
           - unique:
-              enabled: "{{ var('snowplow__enable_yauaa', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
+              enabled: "{{ var('fueled__enable_yauaa', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
           - not_null:
-              enabled: "{{ var('snowplow__enable_yauaa', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
-  - name: snowplow_web_pv_engaged_time
+              enabled: "{{ var('fueled__enable_yauaa', false) and target.type in ['redshift', 'postgres'] | as_bool() }}"
+  - name: fueled_web_pv_engaged_time
     description: '{{ doc("table_pv_engaged_time") }}'
     tests:
       - unique:
           column_name: "(page_view_id || '-' || domain_sessionid)"
           config:
             tags: primary-key
-            enabled: "{{ var('snowplow__limit_page_views_to_session', true) | as_bool }}"
+            enabled: "{{ var('fueled__limit_page_views_to_session', true) | as_bool }}"
       - unique:
           column_name: "page_view_id"
           config:
             tags: primary-key
-            enabled: "{{  var('snowplow__limit_page_views_to_session', true) is not true | as_bool }}"
+            enabled: "{{  var('fueled__limit_page_views_to_session', true) is not true | as_bool }}"
     columns:
       - name: page_view_id
         description: '{{ doc("col_page_view_id") }}'
         tests:
           - not_null
-  - name: snowplow_web_pv_limits
+  - name: fueled_web_pv_limits
     description: '{{ doc("table_pv_limits") }}'
-  - name: snowplow_web_pv_scroll_depth
+  - name: fueled_web_pv_scroll_depth
     description: '{{ doc("table_scroll_depth") }}'
     tests:
       - unique:
           column_name: "(page_view_id || '-' || domain_sessionid)"
           config:
             tags: primary-key
-            enabled: "{{ var('snowplow__limit_page_views_to_session', true) | as_bool }}"
+            enabled: "{{ var('fueled__limit_page_views_to_session', true) | as_bool }}"
       - unique:
           column_name: "page_view_id"
           config:
             tags: primary-key
-            enabled: "{{  var('snowplow__limit_page_views_to_session', true) is not true | as_bool }}"
+            enabled: "{{  var('fueled__limit_page_views_to_session', true) is not true | as_bool }}"
     columns:
       - name: page_view_id
         description: '{{ doc("col_page_view_id") }}'

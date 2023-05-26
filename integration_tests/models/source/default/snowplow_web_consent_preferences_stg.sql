@@ -10,4 +10,4 @@ select
   event_type,
   gdpr_applies::boolean as gdpr_applies
 
-from {{ ref('snowplow_web_consent_preferences') }}
+from {{ ref('fueled_web_consent_preferences') }}

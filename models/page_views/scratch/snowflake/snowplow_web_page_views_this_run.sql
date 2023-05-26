@@ -1,7 +1,7 @@
 {{
   config(
     tags=["this_run"],
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   )
 }}
 
@@ -79,20 +79,20 @@ select
   -- optional fields, only populated if enabled.
 
   -- iab enrichment fields: set iab variable to true to enable
-  {{snowplow_web.get_iab_context_fields()}},
+  {{fueled_web.get_iab_context_fields()}},
 
   -- ua parser enrichment fields
-  {{snowplow_web.get_ua_context_fields()}},
+  {{fueled_web.get_ua_context_fields()}},
 
   -- yauaa enrichment fields
-  {{snowplow_web.get_yauaa_context_fields()}}
+  {{fueled_web.get_yauaa_context_fields()}}
 
-  from {{ ref('snowplow_web_base_events_this_run') }} as ev
+  from {{ ref('fueled_web_base_events_this_run') }} as ev
 
   where ev.event_name = 'page_view'
   and ev.page_view_id is not null
 
-  {% if var("snowplow__ua_bot_filter", true) %}
+  {% if var("fueled__ua_bot_filter", true) %}
      {{ filter_bots('ev') }}
   {% endif %}
 
@@ -123,7 +123,7 @@ select
     p.derived_tstamp,
     p.start_tstamp,
     coalesce(t.end_tstamp, p.derived_tstamp) as end_tstamp, -- only page views with pings will have a row in table t
-    {{ snowplow_utils.current_timestamp_in_utc() }} as model_tstamp,
+    {{ fueled_utils.current_timestamp_in_utc() }} as model_tstamp,
 
     coalesce(t.engaged_time_in_s, 0) as engaged_time_in_s, -- where there are no pings, engaged time is 0.
     timediff(second, p.derived_tstamp, coalesce(t.end_tstamp, p.derived_tstamp))  as absolute_time_in_s,
@@ -225,11 +225,11 @@ select
 
   from prep p
 
-  left join {{ ref('snowplow_web_pv_engaged_time') }} t
-  on p.page_view_id = t.page_view_id {% if var('snowplow__limit_page_views_to_session', true) %} and p.domain_sessionid = t.domain_sessionid {% endif %}
+  left join {{ ref('fueled_web_pv_engaged_time') }} t
+  on p.page_view_id = t.page_view_id {% if var('fueled__limit_page_views_to_session', true) %} and p.domain_sessionid = t.domain_sessionid {% endif %}
 
-  left join {{ ref('snowplow_web_pv_scroll_depth') }} sd
-  on p.page_view_id = sd.page_view_id {% if var('snowplow__limit_page_views_to_session', true) %} and p.domain_sessionid = sd.domain_sessionid {% endif %}
+  left join {{ ref('fueled_web_pv_scroll_depth') }} sd
+  on p.page_view_id = sd.page_view_id {% if var('fueled__limit_page_views_to_session', true) %} and p.domain_sessionid = sd.domain_sessionid {% endif %}
 )
 
 select

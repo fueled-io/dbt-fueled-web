@@ -2,15 +2,15 @@ version: 2
 
 sources:
   - name: atomic
-    schema: "{{ var('snowplow__atomic_schema', 'atomic') }}"
-    database: "{{ var('snowplow__database', target.database) if target.type not in ['databricks', 'spark'] else var('snowplow__databricks_catalog', 'hive_metastore') if target.type in ['databricks'] else var('snowplow__atomic_schema', 'atomic') }}"
+    schema: "{{ var('fueled__atomic_schema', 'atomic') }}"
+    database: "{{ var('fueled__database', target.database) if target.type not in ['databricks', 'spark'] else var('fueled__databricks_catalog', 'hive_metastore') if target.type in ['databricks'] else var('fueled__atomic_schema', 'atomic') }}"
     tables:
-      - name: com_snowplowanalytics_snowplow_web_page_1
+      - name: com_fueledanalytics_fueled_web_page_1
         description: '{{ doc("table_page_view_context") }}'
         columns:
           - name: id
             description: '{{ doc("col_page_view_id") }}'
-      - name: com_iab_snowplow_spiders_and_robots_1
+      - name: com_iab_fueled_spiders_and_robots_1
         description: '{{ doc("table_iab_context") }}'
         columns:
           - name: category
@@ -21,7 +21,7 @@ sources:
             description: '{{ doc("col_reason") }}'
           - name: spider_or_robot
             description: '{{ doc("col_spider_or_robot") }}'
-      - name: com_snowplowanalytics_snowplow_ua_parser_context_1
+      - name: com_fueledanalytics_fueled_ua_parser_context_1
         description: '{{ doc("table_ua_parser_context") }}'
         columns:
           - name: device_family

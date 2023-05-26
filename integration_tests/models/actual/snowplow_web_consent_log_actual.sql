@@ -18,4 +18,4 @@ select
   gdpr_applies,
   cmp_load_time
 
-from {{ ref('snowplow_web_consent_log') }}
+from {{ ref('fueled_web_consent_log') }}

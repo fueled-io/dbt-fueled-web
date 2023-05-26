@@ -2,25 +2,25 @@
 with prep as (
 select
   *
-  except(contexts_com_snowplowanalytics_snowplow_web_page_1_0_0, unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1_0_0, unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1_0_0, contexts_com_iab_snowplow_spiders_and_robots_1_0_0, contexts_com_snowplowanalytics_snowplow_ua_parser_context_1_0_0, contexts_nl_basjes_yauaa_context_1_0_0),
-  JSON_EXTRACT_ARRAY(contexts_com_snowplowanalytics_snowplow_web_page_1_0_0) AS contexts_com_snowplowanalytics_snowplow_web_page_1_0_0,
-  JSON_EXTRACT_ARRAY(unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1_0_0) AS unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1_0_0,
-  JSON_EXTRACT_ARRAY(unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1_0_0) AS unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1_0_0,
-  JSON_EXTRACT_ARRAY(contexts_com_iab_snowplow_spiders_and_robots_1_0_0) as contexts_com_iab_snowplow_spiders_and_robots_1_0_0,
-  JSON_EXTRACT_ARRAY(contexts_com_snowplowanalytics_snowplow_ua_parser_context_1_0_0) as contexts_com_snowplowanalytics_snowplow_ua_parser_context_1_0_0,
+  except(contexts_com_fueledanalytics_fueled_web_page_1_0_0, unstruct_event_com_fueledanalytics_fueled_consent_preferences_1_0_0, unstruct_event_com_fueledanalytics_fueled_cmp_visible_1_0_0, contexts_com_iab_fueled_spiders_and_robots_1_0_0, contexts_com_fueledanalytics_fueled_ua_parser_context_1_0_0, contexts_nl_basjes_yauaa_context_1_0_0),
+  JSON_EXTRACT_ARRAY(contexts_com_fueledanalytics_fueled_web_page_1_0_0) AS contexts_com_fueledanalytics_fueled_web_page_1_0_0,
+  JSON_EXTRACT_ARRAY(unstruct_event_com_fueledanalytics_fueled_consent_preferences_1_0_0) AS unstruct_event_com_fueledanalytics_fueled_consent_preferences_1_0_0,
+  JSON_EXTRACT_ARRAY(unstruct_event_com_fueledanalytics_fueled_cmp_visible_1_0_0) AS unstruct_event_com_fueledanalytics_fueled_cmp_visible_1_0_0,
+  JSON_EXTRACT_ARRAY(contexts_com_iab_fueled_spiders_and_robots_1_0_0) as contexts_com_iab_fueled_spiders_and_robots_1_0_0,
+  JSON_EXTRACT_ARRAY(contexts_com_fueledanalytics_fueled_ua_parser_context_1_0_0) as contexts_com_fueledanalytics_fueled_ua_parser_context_1_0_0,
   JSON_EXTRACT_ARRAY(contexts_nl_basjes_yauaa_context_1_0_0) as contexts_nl_basjes_yauaa_context_1_0_0
-from {{ ref('snowplow_web_events') }}
+from {{ ref('fueled_web_events') }}
 )
 
 -- recreate repeated record field i.e. array of structs as is originally in BQ events table
 select
   *
-  except(contexts_com_snowplowanalytics_snowplow_web_page_1_0_0, unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1_0_0, unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1_0_0, contexts_com_iab_snowplow_spiders_and_robots_1_0_0, contexts_com_snowplowanalytics_snowplow_ua_parser_context_1_0_0, contexts_nl_basjes_yauaa_context_1_0_0),
+  except(contexts_com_fueledanalytics_fueled_web_page_1_0_0, unstruct_event_com_fueledanalytics_fueled_consent_preferences_1_0_0, unstruct_event_com_fueledanalytics_fueled_cmp_visible_1_0_0, contexts_com_iab_fueled_spiders_and_robots_1_0_0, contexts_com_fueledanalytics_fueled_ua_parser_context_1_0_0, contexts_nl_basjes_yauaa_context_1_0_0),
   array(
     select as struct
       JSON_EXTRACT_scalar(json_array,'$.id') as id
-    from unnest(contexts_com_snowplowanalytics_snowplow_web_page_1_0_0) as json_array
-    ) as contexts_com_snowplowanalytics_snowplow_web_page_1_0_0,
+    from unnest(contexts_com_fueledanalytics_fueled_web_page_1_0_0) as json_array
+    ) as contexts_com_fueledanalytics_fueled_web_page_1_0_0,
 
   array(
     select as struct
@@ -31,14 +31,14 @@ select
       JSON_EXTRACT_STRING_ARRAY(json_array,'$.domains_applied') as domains_applied,
       JSON_EXTRACT_scalar(json_array,'$.event_type') as event_type,
       JSON_EXTRACT_scalar(json_array,'$.gdpr_applies') as gdpr_applies
-    from unnest(unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1_0_0) as json_array
-    ) as unstruct_event_com_snowplowanalytics_snowplow_consent_preferences_1_0_0,
+    from unnest(unstruct_event_com_fueledanalytics_fueled_consent_preferences_1_0_0) as json_array
+    ) as unstruct_event_com_fueledanalytics_fueled_consent_preferences_1_0_0,
 
   array(
     select as struct
       JSON_EXTRACT_scalar(json_array,'$.elapsed_time') as elapsed_time
-    from unnest(unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1_0_0) as json_array
-    ) as unstruct_event_com_snowplowanalytics_snowplow_cmp_visible_1_0_0,
+    from unnest(unstruct_event_com_fueledanalytics_fueled_cmp_visible_1_0_0) as json_array
+    ) as unstruct_event_com_fueledanalytics_fueled_cmp_visible_1_0_0,
 
   array(
     select as struct
@@ -46,8 +46,8 @@ select
       JSON_EXTRACT_scalar(json_array,'$.primaryImpact') as primary_impact,
       JSON_EXTRACT_scalar(json_array,'$.reason') as reason,
       cast(JSON_EXTRACT_scalar(json_array ,'$.spiderOrRobot') as boolean) as spider_or_robot
-    from unnest(contexts_com_iab_snowplow_spiders_and_robots_1_0_0) as json_array
-    ) as contexts_com_iab_snowplow_spiders_and_robots_1_0_0,
+    from unnest(contexts_com_iab_fueled_spiders_and_robots_1_0_0) as json_array
+    ) as contexts_com_iab_fueled_spiders_and_robots_1_0_0,
 
   array(
     select as struct
@@ -63,8 +63,8 @@ select
       JSON_EXTRACT_scalar(json_array,'$.useragentMinor') as useragent_minor,
       JSON_EXTRACT_scalar(json_array,'$.useragentPatch') as useragent_patch,
       JSON_EXTRACT_scalar(json_array,'$.useragentVersion') as useragent_version
-    from unnest(contexts_com_snowplowanalytics_snowplow_ua_parser_context_1_0_0) as json_array
-    ) as contexts_com_snowplowanalytics_snowplow_ua_parser_context_1_0_0,
+    from unnest(contexts_com_fueledanalytics_fueled_ua_parser_context_1_0_0) as json_array
+    ) as contexts_com_fueledanalytics_fueled_ua_parser_context_1_0_0,
 
   array(
     select as struct

@@ -2,7 +2,7 @@
 {{ 
   config(
     materialized='view',
-    sql_header=snowplow_utils.set_query_tag(var('snowplow__query_tag', 'snowplow_dbt'))
+    sql_header=fueled_utils.set_query_tag(var('fueled__query_tag', 'fueled_dbt'))
   ) 
 }}
 
@@ -15,6 +15,6 @@ select
   ce.engagement_score,
   ce.channel
 
-from {{ ref('snowplow_web_page_views') }} pv -- Join together the two incremental production tables
-left join {{ ref('snowplow_web_pv_channel_engagement')}} ce
+from {{ ref('fueled_web_page_views') }} pv -- Join together the two incremental production tables
+left join {{ ref('fueled_web_pv_channel_engagement')}} ce
 on pv.page_view_id = ce.page_view_id

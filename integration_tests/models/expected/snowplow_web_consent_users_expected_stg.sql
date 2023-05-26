@@ -15,4 +15,4 @@ select
   cast(last_processed_event as {{ dbt.type_timestamp() }}) as last_processed_event,
   cast(is_latest_version as {{ dbt.type_boolean() }})  as is_latest_version
 
-from {{ ref('snowplow_web_consent_users_expected') }}
+from {{ ref('fueled_web_consent_users_expected') }}

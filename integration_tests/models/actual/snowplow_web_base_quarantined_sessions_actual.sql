@@ -1,4 +1,4 @@
 
 select *
 
-from {{ ref('snowplow_web_base_quarantined_sessions') }}
+from {{ ref('fueled_web_base_quarantined_sessions') }}

@@ -1,6 +1,6 @@
 {{
   config(
-    enabled=(var('snowplow__enable_iab', false) and target.type in ['redshift', 'postgres'] | as_bool())
+    enabled=(var('fueled__enable_iab', false) and target.type in ['redshift', 'postgres'] | as_bool())
   )
 }}
 
@@ -14,14 +14,14 @@ with base as (
     iab.spider_or_robot,
     row_number() over (partition by pv.page_view_id order by pv.collector_tstamp) as dedupe_index
 
-  from {{ var('snowplow__iab_context') }} iab
+  from {{ var('fueled__iab_context') }} iab
 
-  inner join {{ ref('snowplow_web_page_view_events') }} pv
+  inner join {{ ref('fueled_web_page_view_events') }} pv
   on iab.root_id = pv.event_id
   and iab.root_tstamp = pv.collector_tstamp
 
-  where iab.root_tstamp >= (select lower_limit from {{ ref('snowplow_web_pv_limits') }})
-    and iab.root_tstamp <= (select upper_limit from {{ ref('snowplow_web_pv_limits') }})
+  where iab.root_tstamp >= (select lower_limit from {{ ref('fueled_web_pv_limits') }})
+    and iab.root_tstamp <= (select upper_limit from {{ ref('fueled_web_pv_limits') }})
 
 )
 

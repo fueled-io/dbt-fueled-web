@@ -80,27 +80,27 @@ select
   -- optional fields, only populated if enabled.
 
   -- iab enrichment fields: set iab variable to true to enable
-  {{ snowplow_utils.get_optional_fields(
-        enabled=var('snowplow__enable_iab', false),
+  {{ fueled_utils.get_optional_fields(
+        enabled=var('fueled__enable_iab', false),
         fields=iab_fields(),
-        col_prefix='contexts_com_iab_snowplow_spiders_and_robots_1',
-        relation=ref('snowplow_web_base_events_this_run'),
+        col_prefix='contexts_com_iab_fueled_spiders_and_robots_1',
+        relation=ref('fueled_web_base_events_this_run'),
         relation_alias='ev') }},
 
   -- ua parser enrichment fields: set ua_parser variable to true to enable
-  {{ snowplow_utils.get_optional_fields(
-        enabled=var('snowplow__enable_ua', false),
+  {{ fueled_utils.get_optional_fields(
+        enabled=var('fueled__enable_ua', false),
         fields=ua_fields(),
-        col_prefix='contexts_com_snowplowanalytics_snowplow_ua_parser_context_1',
-        relation=ref('snowplow_web_base_events_this_run'),
+        col_prefix='contexts_com_fueledanalytics_fueled_ua_parser_context_1',
+        relation=ref('fueled_web_base_events_this_run'),
         relation_alias='ev') }},
 
   -- yauaa enrichment fields: set yauaa variable to true to enable
-  {{ snowplow_utils.get_optional_fields(
-        enabled=var('snowplow__enable_yauaa', false),
+  {{ fueled_utils.get_optional_fields(
+        enabled=var('fueled__enable_yauaa', false),
         fields=yauaa_fields(),
         col_prefix='contexts_nl_basjes_yauaa_context_1',
-        relation=ref('snowplow_web_base_events_this_run'),
+        relation=ref('fueled_web_base_events_this_run'),
         relation_alias='ev') }}
 
 from (
@@ -108,7 +108,7 @@ from (
     array_agg(e order by e.derived_tstamp, e.dvce_created_tstamp limit 1)[offset(0)] as ev
     -- order by matters here since derived_tstamp determines parts of model logic
 
-  from {{ ref('snowplow_web_base_events_this_run') }} as e
+  from {{ ref('fueled_web_base_events_this_run') }} as e
   where e.event_name = 'page_view'
   and e.page_view_id is not null
 
@@ -116,7 +116,7 @@ from (
 )
 where 1 = 1
 
-{% if var("snowplow__ua_bot_filter", true) %}
+{% if var("fueled__ua_bot_filter", true) %}
  {{ filter_bots('ev') }}
 {% endif %}
 )
@@ -146,7 +146,7 @@ select
   ev.derived_tstamp,
   ev.start_tstamp,
   coalesce(t.end_tstamp, ev.derived_tstamp) as end_tstamp, -- only page views with pings will have a row in table t
-  {{ snowplow_utils.current_timestamp_in_utc() }} as model_tstamp,
+  {{ fueled_utils.current_timestamp_in_utc() }} as model_tstamp,
 
   coalesce(t.engaged_time_in_s, 0) as engaged_time_in_s, -- where there are no pings, engaged time is 0.
   timestamp_diff(coalesce(t.end_tstamp, ev.derived_tstamp), ev.derived_tstamp, second)  as absolute_time_in_s,
@@ -248,8 +248,8 @@ select
 
 from page_view_events ev
 
-left join {{ ref('snowplow_web_pv_engaged_time') }} t
-on ev.page_view_id = t.page_view_id {% if var('snowplow__limit_page_views_to_session', true) %} and ev.domain_sessionid = t.domain_sessionid {% endif %}
+left join {{ ref('fueled_web_pv_engaged_time') }} t
+on ev.page_view_id = t.page_view_id {% if var('fueled__limit_page_views_to_session', true) %} and ev.domain_sessionid = t.domain_sessionid {% endif %}
 
-left join {{ ref('snowplow_web_pv_scroll_depth') }} sd
-on ev.page_view_id = sd.page_view_id {% if var('snowplow__limit_page_views_to_session', true) %} and ev.domain_sessionid = sd.domain_sessionid {% endif %}
+left join {{ ref('fueled_web_pv_scroll_depth') }} sd
+on ev.page_view_id = sd.page_view_id {% if var('fueled__limit_page_views_to_session', true) %} and ev.domain_sessionid = sd.domain_sessionid {% endif %}

@@ -6,7 +6,7 @@
   )
 }}
 
-{%- set lower_limit, upper_limit = snowplow_utils.return_limits_from_model(ref('snowplow_web_base_sessions_this_run'),
+{%- set lower_limit, upper_limit = fueled_utils.return_limits_from_model(ref('fueled_web_base_sessions_this_run'),
                                                                           'start_tstamp',
                                                                           'end_tstamp') %}
 
@@ -143,20 +143,20 @@ with events_this_run AS (
     a.event_version,
     a.event_fingerprint,
     a.true_tstamp,
-    {% if var('snowplow__enable_load_tstamp', true) %}
+    {% if var('fueled__enable_load_tstamp', true) %}
       a.load_tstamp,
     {% endif %}
     row_number() over (partition by a.event_id order by a.collector_tstamp) as event_id_dedupe_index
 
-  from {{ var('snowplow__events') }} as a
-  inner join {{ ref('snowplow_web_base_sessions_this_run') }} as b
+  from {{ var('fueled__events') }} as a
+  inner join {{ ref('fueled_web_base_sessions_this_run') }} as b
   on a.domain_sessionid = b.session_id
 
-  where a.collector_tstamp <= {{ snowplow_utils.timestamp_add('day', var("snowplow__max_session_days", 3), 'b.start_tstamp') }}
-  and a.dvce_sent_tstamp <= {{ snowplow_utils.timestamp_add('day', var("snowplow__days_late_allowed", 3), 'a.dvce_created_tstamp') }}
+  where a.collector_tstamp <= {{ fueled_utils.timestamp_add('day', var("fueled__max_session_days", 3), 'b.start_tstamp') }}
+  and a.dvce_sent_tstamp <= {{ fueled_utils.timestamp_add('day', var("fueled__days_late_allowed", 3), 'a.dvce_created_tstamp') }}
   and a.collector_tstamp >= {{ lower_limit }}
   and a.collector_tstamp <= {{ upper_limit }}
-  and {{ snowplow_utils.app_id_filter(var("snowplow__app_id",[])) }}
+  and {{ fueled_utils.app_id_filter(var("fueled__app_id",[])) }}
 )
 
 , page_context as (
@@ -166,7 +166,7 @@ with events_this_run AS (
     id as page_view_id,
     row_number() over (partition by root_id order by root_tstamp) as page_context_dedupe_index
 
-  from {{ var('snowplow__page_view_context') }}
+  from {{ var('fueled__page_view_context') }}
   where
     root_tstamp >= {{ lower_limit }}
     and root_tstamp <= {{ upper_limit }}

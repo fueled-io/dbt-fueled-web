@@ -33,4 +33,4 @@ select
   webviewAppVersion::varchar as webview_app_version,
   webviewAppVersionMajor::varchar as webview_app_version_major
 
-from {{ ref('snowplow_web_yauaa_context') }}
+from {{ ref('fueled_web_yauaa_context') }}

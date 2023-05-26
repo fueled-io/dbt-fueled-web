@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: snowplow_web_users_this_run
+  - name: fueled_web_users_this_run
     description: '{{ doc("table_users_this_run") }}'
     columns:
       - name: user_id
@@ -103,7 +103,7 @@ models:
         description: '{{ doc("col_mkt_clickid") }}'
       - name: mkt_network
         description: '{{ doc("col_mkt_network") }}'
-  - name: snowplow_web_users_aggs
+  - name: fueled_web_users_aggs
     description: '{{ doc("table_users_aggs") }}'
     columns:
       - name: domain_userid
@@ -113,7 +113,7 @@ models:
         tests:
           - unique
           - not_null
-  - name: snowplow_web_users_lasts
+  - name: fueled_web_users_lasts
     description: '{{ doc("table_users_lasts") }}'
     columns:
       - name: domain_userid
@@ -123,7 +123,7 @@ models:
         tests:
           - unique
           - not_null
-  - name: snowplow_web_users_sessions_this_run
+  - name: fueled_web_users_sessions_this_run
     description: '{{ doc("table_users_sessions_this_run") }}'
     columns:
       - name: domain_sessionid
