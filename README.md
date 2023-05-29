@@ -12,7 +12,7 @@ This dbt package:
 
 This project started off as a mirror of Snowplow Analytics' [dbt-snowplow-web](https://github.com/snowplow/dbt-snowplow-web)
 
-### Adapter Support
+### Data Warehouse Support
 
 The latest version of the fueled-web package supports BigQuery, Databricks, Redshift, Snowflake & Postgres.
 
