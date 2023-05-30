@@ -191,38 +191,6 @@ with events_this_run AS (
 // Temporarily turning off dedupping of events until we can recreate the com_snowplowanalytics_snowplow_web_page_1
 // source table as a base model.
 
-, page_context as (
-  select
-    root_id,
-    root_tstamp,
-    id as page_view_id,
-    row_number() over (partition by root_id order by root_tstamp) as page_context_dedupe_index
-
-  from {{ var('fueled__page_view_context') }}
-  where
-    root_tstamp >= {{ lower_limit }}
-    and root_tstamp <= {{ upper_limit }}
-)
-
-, page_context_dedupe as (
-  select
-   *
-
-  from page_context
-  where page_context_dedupe_index = 1
-)
-
-select
-  e.*,
-  pc.page_view_id
-
-from events_this_run as e
-left join page_context_dedupe as pc
-on e.event_id = pc.root_id
-and e.collector_tstamp = pc.root_tstamp
-
-where e.event_id_dedupe_index = 1
-
 */
 
 select * from events_this_run
