@@ -11,7 +11,9 @@ with session_firsts as (
 
         -- session fields
         domain_sessionid,
+        /*
         domain_sessionidx,
+        */
 
         {{ fueled_utils.current_timestamp_in_utc() }} as model_tstamp,
 
@@ -24,19 +26,25 @@ with session_firsts as (
         {% else %}
             cast(null as {{ fueled_utils.type_max_string() }}) as stitched_user_id,
         {% endif %}
+        
+        /*
         network_userid as network_userid,
+        */
 
         -- first page fields
         page_title as first_page_title,
         page_url as first_page_url,
+        /*
         page_urlscheme as first_page_urlscheme,
         page_urlhost as first_page_urlhost,
         page_urlpath as first_page_urlpath,
         page_urlquery as first_page_urlquery,
         page_urlfragment as first_page_urlfragment,
+        */
 
         -- referrer fields
         page_referrer as referrer,
+        /*
         refr_urlscheme as refr_urlscheme,
         refr_urlhost as refr_urlhost,
         refr_urlpath as refr_urlpath,
@@ -65,16 +73,19 @@ with session_firsts as (
         geo_latitude as geo_latitude,
         geo_longitude as geo_longitude,
         geo_timezone as geo_timezone,
+        */
 
         -- ip address
         user_ipaddress as user_ipaddress,
 
         -- user agent
+        /*
         useragent as useragent,
 
         br_renderengine as br_renderengine,
         br_lang as br_lang,
         os_timezone as os_timezone,
+        */
 
         -- optional fields, only populated if enabled.
         -- iab enrichment fields: set iab variable to true to enable
@@ -119,17 +130,19 @@ session_lasts as (
         domain_sessionid,
         page_title as last_page_title,
         page_url as last_page_url,
+        /*
         page_urlscheme as last_page_urlscheme,
         page_urlhost as last_page_urlhost,
         page_urlpath as last_page_urlpath,
         page_urlquery as last_page_urlquery,
         page_urlfragment as last_page_urlfragment,
+        */
         row_number() over (partition by ev.domain_sessionid order by ev.derived_tstamp desc, ev.dvce_created_tstamp) AS page_event_in_session_index
     from {{ ref('fueled_web_base_events_this_run') }} ev
     where
         event_name in ('page_view')
         and page_view_id is not null
-        {% if var("fueled__ua_bot_filter", true) %}
+        {% if var("fueled__ua_bot_filter", false) %}
             {{ filter_bots() }}
         {% endif %}
 ),
@@ -172,8 +185,11 @@ select
 
     -- session fields
     a.domain_sessionid,
+    /*
     a.domain_sessionidx,
+    */
 
+    -- TODO - Not sure what `page_ping` is.
     -- when the session starts with a ping we need to add the min visit length to get when the session actually started
     case when a.event_name = 'page_ping' then
         {{ fueled_utils.timestamp_add(datepart="second", interval=-var("fueled__min_visit_length", 5), tstamp="c.start_tstamp") }}
@@ -196,21 +212,26 @@ select
     -- first page fields
     a.first_page_title,
     a.first_page_url,
+    /*
     a.first_page_urlscheme,
     a.first_page_urlhost,
     a.first_page_urlpath,
     a.first_page_urlquery,
     a.first_page_urlfragment,
+    */
 
     -- only take the first value when the last is genuinely missing (base on url as has to always be populated)
     case when b.last_page_url is null then coalesce(b.last_page_title, a.first_page_title) else b.last_page_title end as last_page_title,
     case when b.last_page_url is null then coalesce(b.last_page_url, a.first_page_url) else b.last_page_url end as last_page_url,
+    /*
     case when b.last_page_url is null then coalesce(b.last_page_urlscheme, a.first_page_urlscheme) else b.last_page_urlscheme end as last_page_urlscheme,
     case when b.last_page_url is null then coalesce(b.last_page_urlhost, a.first_page_urlhost) else b.last_page_urlhost end as last_page_urlhost,
     case when b.last_page_url is null then coalesce(b.last_page_urlpath, a.first_page_urlpath) else b.last_page_urlpath end as last_page_urlpath,
     case when b.last_page_url is null then coalesce(b.last_page_urlquery, a.first_page_urlquery) else b.last_page_urlquery end as last_page_urlquery,
     case when b.last_page_url is null then coalesce(b.last_page_urlfragment, a.first_page_urlfragment) else b.last_page_urlfragment end as last_page_urlfragment,
+    */
 
+    /*
     -- referrer fields
     a.referrer,
     a.refr_urlscheme,
@@ -240,13 +261,17 @@ select
     a.geo_latitude,
     a.geo_longitude,
     a.geo_timezone,
+    */
 
     -- ip address
     a.user_ipaddress,
 
+    /*
     -- user agent
     a.useragent,
+    */
 
+    /*
     a.br_renderengine,
     a.br_lang,
 
@@ -294,6 +319,7 @@ select
     a.operating_system_name,
     a.operating_system_name_version,
     a.operating_system_version
+    */
 from
     session_firsts a
 left join
