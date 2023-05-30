@@ -157,6 +157,7 @@ with events_this_run AS (
     a.etl_tags,
     */
     a.original_timestamp as dvce_sent_tstamp,
+    /*
     a.refr_domain_userid,
     a.refr_dvce_tstamp,
     */
@@ -165,24 +166,24 @@ with events_this_run AS (
     'fueled' as event_vendor,
     'page_view' as event_name,
     'jsonschema' as event_format,
-    a.library_version as event_version,
+    a.context_library_version as event_version,
     /*
     a.event_fingerprint,
     a.true_tstamp,
     */
-    {% if var('fueled__enable_load_tstamp', true) %}
+    {% if var('fueled__enable_load_tstamp', false) %}
       a.load_tstamp,
     {% endif %}
-    row_number() over (partition by a.event_id order by a.collector_tstamp) as event_id_dedupe_index
+    row_number() over (partition by a.id order by a.original_timestamp) as event_id_dedupe_index
 
   from {{ var('fueled__events') }} as a
   inner join {{ ref('fueled_web_base_sessions_this_run') }} as b
-  on domain_sessionid = b.session_id
+  on a.context_anonymous_id = b.session_id
 
-  where a.collector_tstamp <= {{ fueled_utils.timestamp_add('day', var("fueled__max_session_days", 3), 'b.start_tstamp') }}
-  and a.dvce_sent_tstamp <= {{ fueled_utils.timestamp_add('day', var("fueled__days_late_allowed", 3), 'a.dvce_created_tstamp') }}
-  and a.collector_tstamp >= {{ lower_limit }}
-  and a.collector_tstamp <= {{ upper_limit }}
+  where a.original_timestamp <= {{ fueled_utils.timestamp_add('day', var("fueled__max_session_days", 3), 'b.start_tstamp') }}
+  and a.original_timestamp <= {{ fueled_utils.timestamp_add('day', var("fueled__days_late_allowed", 3), 'a.original_timestamp') }}
+  and a.original_timestamp >= {{ lower_limit }}
+  and a.original_timestamp <= {{ upper_limit }}
   and {{ fueled_utils.app_id_filter(var("fueled__app_id",[])) }}
 )
 
