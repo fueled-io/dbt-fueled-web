@@ -25,9 +25,9 @@ clean-targets:
 vars:
   fueled_web:
     # Sources
-    # fueled__atomic_schema: 'atomic_data_sample' # Only set if not using 'atomic' schema for Fueled events data
+    fueled__atomic_schema: 'fueled' # Set to the schema written by Fueled's Rudderstack adapter
     # fueled__database:  # Only set if not using target.database for Fueled events data -- WILL BE IGNORED FOR DATABRICKS
-    fueled__events: "{{ source('atomic', 'events') }}"
+    fueled__events: 'pages' # Set to the source table for page_views written by Fueled's RudderStack adapter
     fueled__page_view_context: "{{ source('atomic','com_fueledanalytics_fueled_web_page_1') }}"
     fueled__iab_context: "{{ source('atomic','com_iab_fueled_spiders_and_robots_1') }}"
     fueled__ua_parser_context: "{{ source('atomic','com_fueledanalytics_fueled_ua_parser_context_1') }}"

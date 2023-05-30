@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: atomic
-    schema: "{{ var('fueled__atomic_schema', 'atomic') }}"
+    schema: atomic
     database: "{{ var('fueled__database', target.database) if target.type not in ['databricks', 'spark'] else var('fueled__databricks_catalog', 'hive_metastore') if target.type in ['databricks'] else var('fueled__atomic_schema', 'atomic') }}"
     tables:
       - name: com_fueledanalytics_fueled_web_page_1
@@ -350,3 +350,38 @@ sources:
             description: '{{ doc("col_event_fingerprint") }}'
           - name: true_tstamp
             description: '{{ doc("col_true_tstamp") }}'
+  - name: fueled
+    schema: fueled
+    tables:
+      - name: pages
+        description: Populated with page_view events from Fueled client-side library.
+        columns:
+          - name: channel
+          - name: context_client_id
+          - name: context_destination_id
+          - name: context_destination_type
+          - name: context_ip
+          - name: context_library_name
+          - name: context_library_version
+          - name: context_request_ip
+          - name: context_session_id
+          - name: context_source_id
+          - name: context_source_type
+          - name: height
+          - name: id
+          - name: name
+          - name: original_timestamp
+          - name: path
+          - name: received_at
+          - name: referrer
+          - name: search
+          - name: sent_at
+          - name: timestamp
+          - name: title
+          - name: url
+          - name: user_id
+          - name: uuid_ts
+          - name: width
+          - name: hash
+          - name: context_anonymous_id
+
