@@ -23,94 +23,33 @@ with events_this_run AS (
     'page_view' as event,
     a.id as event_id,
     a.id as page_view_id,
-    /* a.txn_id, */
     a.context_source_id as name_tracker,
     a.context_library_version as v_tracker,
     a.context_destination_id as v_collector,
     a.context_destination_type as v_etl,
     a.user_id as user_id,
     a.context_ip as user_ipaddress,
-    /* a.user_fingerprint, */
     b.domain_userid, -- take domain_userid from manifest. This ensures only 1 domain_userid per session.
-    /* a.domain_sessionidx, */
     a.context_anonymous_id as network_userid,
-    /*
-    a.geo_country,
-    a.geo_region,
-    a.geo_city,
-    a.geo_zipcode,
-    a.geo_latitude,
-    a.geo_longitude,
-    a.geo_region_name,
-    */
-    /*
-    a.ip_isp,
-    a.ip_organization,
-    a.ip_domain,
-    a.ip_netspeed,
-    */
     a.url as page_url,
     a.title as page_title,
-    a.referrer as page_referrer,
     a.context_source_type as page_urlscheme,
+    {{ dbt_utils.get_url_host(field='a.url') }} as page_urlhost,
+    a.path as page_urlpath,
+    a.search as page_urlquery,
+    a.referrer as page_referrer,
+    {{ dbt_utils.get_url_host(field='a.referrer') }} as refr_urlhost, 
+    {{ dbt_utils.get_url_path(field='a.referrer') }} as refr_path,
     /*
-    a.page_urlhost,
-    a.page_urlport,
-    a.page_urlpath,
-    a.page_urlquery,
-    a.page_urlfragment,
-    */
-    /*
-    a.refr_urlscheme,
-    a.refr_urlhost,
-    a.refr_urlport,
-    a.refr_urlpath,
-    a.refr_urlquery,
-    a.refr_urlfragment,
+    a.useragent,
     a.refr_medium,
     a.refr_source,
     a.refr_term,
-    */
-    /*
     a.mkt_medium,
     a.mkt_source,
     a.mkt_term,
     a.mkt_content,
     a.mkt_campaign,
-    */
-    /*
-    a.se_category,
-    a.se_action,
-    a.se_label,
-    a.se_property,
-    a.se_value,
-    */
-    /*
-    a.tr_orderid,
-    a.tr_affiliation,
-    a.tr_total,
-    a.tr_tax,
-    a.tr_shipping,
-    a.tr_city,
-    a.tr_state,
-    a.tr_country,
-    a.ti_orderid,
-    a.ti_sku,
-    a.ti_name,
-    a.ti_category,
-    a.ti_price,
-    a.ti_quantity,
-    */
-    /*
-    a.pp_xoffset_min,
-    a.pp_xoffset_max,
-    a.pp_yoffset_min,
-    a.pp_yoffset_max,
-    */
-    /*
-    a.useragent,
-    */
-    /*
     a.br_name,
     a.br_family,
     a.br_version,
@@ -130,8 +69,6 @@ with events_this_run AS (
     a.br_colordepth,
     a.br_viewwidth,
     a.br_viewheight,
-    */
-    /*
     a.os_name,
     a.os_family,
     a.os_manufacturer,
@@ -141,37 +78,15 @@ with events_this_run AS (
     a.dvce_screenwidth,
     a.dvce_screenheight,
     */
-    /* a.doc_charset,*/
     a.width as doc_width,
     a.height as doc_height,
-    /*
-    a.tr_currency,
-    a.tr_total_base,
-    a.tr_tax_base,
-    a.tr_shipping_base,
-    a.ti_currency,
-    a.ti_price_base,
-    a.base_currency,
-    a.geo_timezone,
-    a.mkt_clickid,
-    a.mkt_network,
-    a.etl_tags,
-    */
     a.original_timestamp as dvce_sent_tstamp,
-    /*
-    a.refr_domain_userid,
-    a.refr_dvce_tstamp,
-    */
     a.context_anonymous_id as domain_sessionid,
     a.original_timestamp as derived_tstamp,
     'fueled' as event_vendor,
     'page_view' as event_name,
     'jsonschema' as event_format,
     a.context_library_version as event_version,
-    /*
-    a.event_fingerprint,
-    a.true_tstamp,
-    */
     {% if var('fueled__enable_load_tstamp', false) %}
       a.load_tstamp,
     {% endif %}
@@ -187,13 +102,5 @@ with events_this_run AS (
   and a.original_timestamp <= {{ upper_limit }}
   and {{ fueled_utils.app_id_filter(var("fueled__app_id",[])) }}
 )
-
-/*
-
-// Temporarily turning off dedupping of events until we can recreate the com_snowplowanalytics_snowplow_web_page_1
-// source table as a base model.
-// TODO - Fix hack where page_view_id is set as the pages.id value from source tables.
-
-*/
 
 select * from events_this_run

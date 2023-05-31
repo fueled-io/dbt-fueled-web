@@ -42,7 +42,7 @@ vars:
     #
     fueled__sessions_table: "{{ ref('fueled_web_sessions') }}" # Change to your custom sessions table if you have disabled the standard sessions table in favour of a custom version. Advanced config.
     # Variables - Standard Config
-    fueled__start_date: '2023-04-01'
+    fueled__start_date: '2023-03-01'
     fueled__min_visit_length: 5
     fueled__heartbeat: 10
     fueled__backfill_limit_days: 30
