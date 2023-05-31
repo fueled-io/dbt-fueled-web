@@ -20,7 +20,7 @@ Note: Our team primarily leverages RedShift, BigQuery, and Snowflake. Support is
 ### Requirements
 
 - A dataset of web events from Fueled's javascript client for Shopify or BigCommerce must be available in the database.
-- dbt-core version 1.4.0 or greater
+- dbt-core version 1.5.0 or greater
 
 ### Models
 
@@ -28,14 +28,22 @@ The package contains multiple staging models however the output models are as fo
 
 | Model                             | Description                                                                                                  |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| fueled_web_page_views           | A table of page views, including engagement metrics such as scroll depth and engaged time.                   |
+| fueled_web_page_views           | A table of page views, including engagement metrics.                   |
 | fueled_web_sessions             | An aggregated table of page views, grouped on `domain_sessionid`.                                            |
 | fueled_web_users                | An aggregated table of sessions to a user level, grouped on `domain_userid`.                                 |
 | fueled_web_user_mapping         | Provides a mapping between user identifiers, `domain_userid` and `user_id`.                                  |
 
-# Copyright and license
+### To Dos
+
+- Add UA Parser to get abstract browser, device, and OS metrics from userAgent.
+- Add Referrer Parser to get Source, Medium, and Search Term metrics from referring URLs.
+- Add Campaign Parser to get Source, Medium, Search, and Marketing Click metrics from page URLs.
+
+### Copyright and license
 
 The fueled-web package is based upon Snowplow Analytic's original Copyright 2021-2022.
+
+DBT-Fueled-Web is copyrighted 2023.
 
 Licensed under the [Apache License, Version 2.0][license] (the "License");
 you may not use this software except in compliance with the License.
@@ -48,6 +56,6 @@ limitations under the License.
 
 [license]: http://www.apache.org/licenses/LICENSE-2.0
 
-# Significant Changes
+### Significant Changes
 
 Snowplow's dbt-snowplow-web package has been mirrored by Fueled to work with Fueled's base event structures.
