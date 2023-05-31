@@ -38,6 +38,7 @@ The package contains multiple staging models however the output models are as fo
 - Add UA Parser to get abstract browser, device, and OS metrics from userAgent.
 - Add Referrer Parser to get Source, Medium, and Search Term metrics from referring URLs.
 - Add Campaign Parser to get Source, Medium, Search, and Marketing Click metrics from page URLs.
+- Implement spider/robot filter.
 
 ### Copyright and license
 

@@ -1,8 +1,9 @@
 version: 2
 
 sources:
-  - name: fueled
-    schema: fueled
+  - name: fueled_atomic
+    description: '{{ doc("table_pages") }}'
+    schema: "{{ var('fueled__atomic_schema', 'fueled_atomic') }}"
     tables:
       - name: pages
         description: Populated with page_view events from Fueled client-side library.

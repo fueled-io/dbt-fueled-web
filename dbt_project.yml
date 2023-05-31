@@ -4,7 +4,7 @@ config-version: 2
 
 require-dbt-version: [">=1.4.0", "<2.0.0"]
 
-profile: 'integration_tests'
+profile: 'integration_tests' # Set to your DTB Profile.
 
 dispatch:
   - macro_namespace: dbt
@@ -25,20 +25,14 @@ clean-targets:
 vars:
   fueled_web:
     # Sources
-    #fueled__atomic_schema: 'fueled' # Set to the schema written by Fueled's Rudderstack adapter
+    fueled__atomic_schema: 'fueled' # If not `fueled_atomic`, set to to the schema written by Fueled's warehouse adapter
     # fueled__database:  # Only set if not using target.database for Fueled events data -- WILL BE IGNORED FOR DATABRICKS
-    fueled__events: "{{ source('fueled', 'pages')}}" # Set to the source table for page_views written by Fueled's RudderStack adapter
+    fueled__events: "{{ source('fueled_atomic', 'pages')}}" # Set to the source table for page_views written by Fueled's warehouse adapter
     #
-    # TODO - The 5 tables below do not exist for Fueled. They will need to be recreated as Models if needed.
-    #
+    # TODO:
     # The fueled__page_view_context table seems to only be used for dedupping events in fueled_web_base_events_this_run.sql.
     # We might be able to get away without it. 
     # fueled__page_view_context: "{{ source('atomic','com_fueledanalytics_fueled_web_page_1') }}"
-    #
-    # Recreate the source tables below as models.
-    # fueled__iab_context: "{{ source('atomic','com_iab_fueled_spiders_and_robots_1') }}"
-    # fueled__ua_parser_context: "{{ source('atomic','com_fueledanalytics_fueled_ua_parser_context_1') }}"
-    #fueled__yauaa_context: "{{ source('atomic','nl_basjes_yauaa_context_1') }}"
     #
     fueled__sessions_table: "{{ ref('fueled_web_sessions') }}" # Change to your custom sessions table if you have disabled the standard sessions table in favour of a custom version. Advanced config.
     # Variables - Standard Config
@@ -47,13 +41,7 @@ vars:
     fueled__heartbeat: 10
     fueled__backfill_limit_days: 30
     fueled__app_id: []
-    # Setting default values for 3 enrichments below throughout package rather than here
-    # Workaround for a bug (https://github.com/dbt-labs/dbt-core/issues/3698).
-    # TODO: Return to having default values here once fixed.
-    # fueled__enable_iab: false
-    # fueled__enable_ua: false
-    # fueled__enable_yauaa: false
-    fueled__ua_bot_filter: false # Default is TRUE. Setting to false until we recreate models for this.
+    fueled__ua_bot_filter: false # TODO - Implement bot filter.
     fueled__derived_tstamp_partitioned: true
     fueled__session_stitching: true
     fueled__enable_load_tstamp: false # set to false if you are using the postgres loader or earlier than 4.0.0 of the RDB loader
