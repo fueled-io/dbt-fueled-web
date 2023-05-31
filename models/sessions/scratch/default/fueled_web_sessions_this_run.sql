@@ -201,7 +201,9 @@ select
     a.user_id,
     a.domain_userid,
     a.stitched_user_id,
+    /*
     a.network_userid,
+    */
 
     -- engagement fields
     c.page_views,
@@ -231,9 +233,9 @@ select
     case when b.last_page_url is null then coalesce(b.last_page_urlfragment, a.first_page_urlfragment) else b.last_page_urlfragment end as last_page_urlfragment,
     */
 
-    /*
     -- referrer fields
     a.referrer,
+    /*
     a.refr_urlscheme,
     a.refr_urlhost,
     a.refr_urlpath,
@@ -264,7 +266,7 @@ select
     */
 
     -- ip address
-    a.user_ipaddress,
+    a.user_ipaddress
 
     /*
     -- user agent

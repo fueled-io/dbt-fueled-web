@@ -18,7 +18,9 @@ select
 
   -- session fields
   ev.domain_sessionid,
+  /*
   ev.domain_sessionidx,
+  */
 
   ev.page_view_in_session_index,
   max(ev.page_view_in_session_index) over (partition by ev.domain_sessionid) as page_views_in_session,
@@ -34,17 +36,20 @@ select
   coalesce(t.engaged_time_in_s, 0) as engaged_time_in_s, -- where there are no pings, engaged time is 0.
   {{ datediff('ev.derived_tstamp', 'coalesce(t.end_tstamp, ev.derived_tstamp)', 'second') }} as absolute_time_in_s,
 
+  /*  
   sd.hmax as horizontal_pixels_scrolled,
   sd.vmax as vertical_pixels_scrolled,
 
   sd.relative_hmax as horizontal_percentage_scrolled,
   sd.relative_vmax as vertical_percentage_scrolled,
+  */
 
   ev.doc_width,
   ev.doc_height,
 
   ev.page_title,
   ev.page_url,
+  /*
   ev.page_urlscheme,
   ev.page_urlhost,
   ev.page_urlpath,
@@ -58,8 +63,10 @@ select
   ev.mkt_campaign,
   ev.mkt_clickid,
   ev.mkt_network,
+  */
 
   ev.page_referrer,
+  /*
   ev.refr_urlscheme,
   ev.refr_urlhost,
   ev.refr_urlpath,
@@ -77,9 +84,11 @@ select
   ev.geo_latitude,
   ev.geo_longitude,
   ev.geo_timezone,
+  */
 
   ev.user_ipaddress,
 
+  /*
   ev.useragent,
 
   ev.br_lang,
@@ -89,6 +98,7 @@ select
   ev.br_renderengine,
 
   ev.os_timezone,
+  */
 
   -- optional fields, only populated if enabled.
 
@@ -105,9 +115,6 @@ from {{ ref('fueled_web_page_view_events') }} ev
 
 left join {{ ref('fueled_web_pv_engaged_time') }} t
 on ev.page_view_id = t.page_view_id {% if var('fueled__limit_page_views_to_session', true) %} and ev.domain_sessionid = t.domain_sessionid {% endif %}
-
-left join {{ ref('fueled_web_pv_scroll_depth') }} sd
-on ev.page_view_id = sd.page_view_id {% if var('fueled__limit_page_views_to_session', true) %} and ev.domain_sessionid = sd.domain_sessionid {% endif %}
 
 {% if var('fueled__enable_iab', false) -%}
 

@@ -22,6 +22,7 @@ with events_this_run AS (
     a.original_timestamp as dvce_created_tstamp,
     'page_view' as event,
     a.id as event_id,
+    a.id as page_view_id,
     /* a.txn_id, */
     a.context_source_id as name_tracker,
     a.context_library_version as v_tracker,
@@ -162,7 +163,7 @@ with events_this_run AS (
     a.refr_dvce_tstamp,
     */
     a.context_anonymous_id as domain_sessionid,
-    /* a.derived_tstamp, */
+    a.original_timestamp as derived_tstamp,
     'fueled' as event_vendor,
     'page_view' as event_name,
     'jsonschema' as event_format,
@@ -191,6 +192,7 @@ with events_this_run AS (
 
 // Temporarily turning off dedupping of events until we can recreate the com_snowplowanalytics_snowplow_web_page_1
 // source table as a base model.
+// TODO - Fix hack where page_view_id is set as the pages.id value from source tables.
 
 */
 

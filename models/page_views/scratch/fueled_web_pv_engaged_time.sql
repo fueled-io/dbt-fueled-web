@@ -9,7 +9,7 @@ select
   {% if var('fueled__limit_page_views_to_session', true) %}
   ev.domain_sessionid,
   {% endif %}
-  max(ev.derived_tstamp) as end_tstamp,
+  max(ev.collector_tstamp) as end_tstamp,
 
   -- aggregate pings:
     -- divides epoch tstamps by fueled__heartbeat to get distinct intervals
