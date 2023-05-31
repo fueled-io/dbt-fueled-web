@@ -45,8 +45,6 @@ macros:
     description: '{{ doc("macro_web_cluster_by_X") }}'
   - name: web_cluster_by_fields_users
     description: '{{ doc("macro_web_cluster_by_X") }}'
-  - name: web_cluster_by_fields_consent
-    description: '{{ doc("macro_web_cluster_by_X") }}'
   - name: iab_fields
     description: '{{ doc("macro_bq_context_fields") }}'
   - name: ua_fields

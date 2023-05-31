@@ -67,13 +67,6 @@ vars:
     fueled__dev_target_name: 'dev'
     fueled__allow_refresh: false
     # fueled__limit_page_views_to_session: true
-    # Variables - Databricks Only
-    # Add the following variable to your dbt project's dbt_project.yml file
-    # Depending on the use case it should either be the catalog (for Unity Catalog users from databricks connector 1.1.1 onwards) or the same value as your fueled__atomic_schema (unless changed it should be 'atomic')
-    # fueled__databricks_catalog: 'hive_metastore'
-    # Variables - Optional Consent model only
-    fueled__consent_cmp_visible: "{{ source('atomic', 'com_fueledanalytics_fueled_cmp_visible_1') }}"
-    fueled__consent_preferences: "{{ source('atomic', 'com_fueledanalytics_fueled_consent_preferences_1') }}"
 
 # Completely or partially remove models from the manifest during run start.
 on-run-start:
@@ -105,9 +98,6 @@ models:
           enabled: "{{ target.type in ['redshift', 'postgres'] | as_bool() }}"
         snowflake:
           enabled: "{{ target.type == 'snowflake' | as_bool() }}"
-    optional_modules:
-      consent:
-        enabled: false
 
     page_views:
       +schema: "derived"

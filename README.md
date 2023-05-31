@@ -15,6 +15,7 @@ This project started off as a mirror of Snowplow Analytics' [dbt-snowplow-web](h
 ### Data Warehouse Support
 
 The latest version of the fueled-web package supports BigQuery, Databricks, Redshift, Snowflake & Postgres.
+Note: Our team primarily leverages RedShift, BigQuery, and Snowflake. Support is limited for Databricks at this time.
 
 ### Requirements
 
