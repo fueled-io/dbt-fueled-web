@@ -1,8 +1,0 @@
-version: 2
-
-sources:
-  - name: atomic
-    schema: "{{ var('fueled__atomic_schema', 'atomic') }}"
-    database: "{{ var('fueled__database', target.database) }}"
-    tables:
-      - name: com_fueledanalytics_fueled_link_click_1
