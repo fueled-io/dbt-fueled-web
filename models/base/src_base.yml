@@ -9,31 +9,59 @@ sources:
         description: Populated with page_view events from Fueled client-side library.
         columns:
           - name: channel
+            description: '{{ doc("col_channel") }}'
           - name: context_client_id
+            description: '{{ doc("col_client_id") }}'
           - name: context_destination_id
+            description: '{{ doc("col_context_destination_id") }}'
           - name: context_destination_type
+            description: '{{ doc("col_context_destination_type") }}'
           - name: context_ip
+            description: '{{ doc("col_context_ip") }}'
           - name: context_library_name
+            description: '{{ doc("col_context_library_name") }}'
           - name: context_library_version
+            description: '{{ doc("col_context_library_version") }}'
           - name: context_request_ip
+            description: '{{ doc("col_request_ip") }}'
           - name: context_session_id
+            description: '{{ doc("col_context_session_id") }}'
           - name: context_source_id
+            description: '{{ doc("col_context_source_id") }}'
           - name: context_source_type
+            description: '{{ doc("col_context_source_type") }}'
           - name: height
+            description: '{{ doc("col_height") }}'
           - name: id
+            description: '{{ doc("col_id") }}'
           - name: name
+            description: '{{ doc("col_name") }}'
           - name: original_timestamp
+            description: '{{ doc("col_original_timestamp") }}'
           - name: path
+            description: '{{ doc("col_path") }}'
           - name: received_at
+            description: '{{ doc("col_received_at") }}'
           - name: referrer
+            description: '{{ doc("col_referrer") }}'
           - name: search
+            description: '{{ doc("col_search") }}'
           - name: sent_at
+            description: '{{ doc("col_sent_at") }}'
           - name: timestamp
+            description: '{{ doc("col_timestamp") }}'
           - name: title
+            description: '{{ doc("col_title") }}'
           - name: url
+            description: '{{ doc("col_url") }}'
           - name: user_id
+            description: '{{ doc("col_user_id") }}'
           - name: uuid_ts
+            description: '{{ doc("col_uuid_ts") }}'
           - name: width
+            description: '{{ doc("col_width") }}'
           - name: hash
+            description: '{{ doc("col_hash") }}'
           - name: context_anonymous_id
+            description: '{{ doc("col_context_anonymous_id") }}'
 

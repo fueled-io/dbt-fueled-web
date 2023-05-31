@@ -46,8 +46,6 @@ models:
         tests:
           - unique
           - not_null
-      - name: txn_id
-        description: '{{ doc("col_txn_id") }}'
       - name: name_tracker
         description: '{{ doc("col_name_tracker") }}'
       - name: v_tracker
@@ -60,12 +58,8 @@ models:
         description: '{{ doc("col_user_id") }}'
       - name: user_ipaddress
         description: '{{ doc("col_user_ipaddress") }}'
-      - name: user_fingerprint
-        description: '{{ doc("col_user_fingerprint") }}'
       - name: domain_userid
         description: '{{ doc("col_domain_userid") }}'
-      - name: domain_sessionidx
-        description: '{{ doc("col_domain_sessionidx") }}'
       - name: network_userid
         description: '{{ doc("col_network_userid") }}'
       - name: geo_country
@@ -82,14 +76,6 @@ models:
         description: '{{ doc("col_geo_longitude") }}'
       - name: geo_region_name
         description: '{{ doc("col_geo_region_name") }}'
-      - name: ip_isp
-        description: '{{ doc("col_ip_isp") }}'
-      - name: ip_organization
-        description: '{{ doc("col_ip_organization") }}'
-      - name: ip_domain
-        description: '{{ doc("col_ip_domain") }}'
-      - name: ip_netspeed
-        description: '{{ doc("col_ip_netspeed") }}'
       - name: page_url
         description: '{{ doc("col_page_url") }}'
       - name: page_title
@@ -100,26 +86,16 @@ models:
         description: '{{ doc("col_page_urlscheme") }}'
       - name: page_urlhost
         description: '{{ doc("col_page_urlhost") }}'
-      - name: page_urlport
-        description: '{{ doc("col_page_urlport") }}'
       - name: page_urlpath
         description: '{{ doc("col_page_urlpath") }}'
       - name: page_urlquery
         description: '{{ doc("col_page_urlquery") }}'
-      - name: page_urlfragment
-        description: '{{ doc("col_page_urlfragment") }}'
-      - name: refr_urlscheme
-        description: '{{ doc("col_refr_urlscheme") }}'
       - name: refr_urlhost
         description: '{{ doc("col_refr_urlhost") }}'
-      - name: refr_urlport
-        description: '{{ doc("col_refr_urlport") }}'
       - name: refr_urlpath
         description: '{{ doc("col_refr_urlpath") }}'
       - name: refr_urlquery
         description: '{{ doc("col_refr_urlquery") }}'
-      - name: refr_urlfragment
-        description: '{{ doc("col_refr_urlfragment") }}'
       - name: refr_medium
         description: '{{ doc("col_refr_medium") }}'
       - name: refr_source
@@ -136,52 +112,6 @@ models:
         description: '{{ doc("col_mkt_content") }}'
       - name: mkt_campaign
         description: '{{ doc("col_mkt_campaign") }}'
-      - name: se_category
-        description: '{{ doc("col_se_category") }}'
-      - name: se_action
-        description: '{{ doc("col_se_action") }}'
-      - name: se_label
-        description: '{{ doc("col_se_label") }}'
-      - name: se_property
-        description: '{{ doc("col_se_property") }}'
-      - name: se_value
-        description: '{{ doc("col_se_value") }}'
-      - name: tr_orderid
-        description: '{{ doc("col_tr_orderid") }}'
-      - name: tr_affiliation
-        description: '{{ doc("col_tr_affiliation") }}'
-      - name: tr_total
-        description: '{{ doc("col_tr_total") }}'
-      - name: tr_tax
-        description: '{{ doc("col_tr_tax") }}'
-      - name: tr_shipping
-        description: '{{ doc("col_tr_shipping") }}'
-      - name: tr_city
-        description: '{{ doc("col_tr_city") }}'
-      - name: tr_state
-        description: '{{ doc("col_tr_state") }}'
-      - name: tr_country
-        description: '{{ doc("col_tr_country") }}'
-      - name: ti_orderid
-        description: '{{ doc("col_ti_orderid") }}'
-      - name: ti_sku
-        description: '{{ doc("col_ti_sku") }}'
-      - name: ti_name
-        description: '{{ doc("col_ti_name") }}'
-      - name: ti_category
-        description: '{{ doc("col_ti_category") }}'
-      - name: ti_price
-        description: '{{ doc("col_ti_price") }}'
-      - name: ti_quantity
-        description: '{{ doc("col_ti_quantity") }}'
-      - name: pp_xoffset_min
-        description: '{{ doc("col_pp_xoffset_min") }}'
-      - name: pp_xoffset_max
-        description: '{{ doc("col_pp_xoffset_max") }}'
-      - name: pp_yoffset_min
-        description: '{{ doc("col_pp_yoffset_min") }}'
-      - name: pp_yoffset_max
-        description: '{{ doc("col_pp_yoffset_max") }}'
       - name: useragent
         description: '{{ doc("col_useragent") }}'
       - name: br_name
@@ -244,20 +174,6 @@ models:
         description: '{{ doc("col_doc_width") }}'
       - name: doc_height
         description: '{{ doc("col_doc_height") }}'
-      - name: tr_currency
-        description: '{{ doc("col_tr_currency") }}'
-      - name: tr_total_base
-        description: '{{ doc("col_tr_total_base") }}'
-      - name: tr_tax_base
-        description: '{{ doc("col_tr_tax_base") }}'
-      - name: tr_shipping_base
-        description: '{{ doc("col_tr_shipping_base") }}'
-      - name: ti_currency
-        description: '{{ doc("col_ti_currency") }}'
-      - name: ti_price_base
-        description: '{{ doc("col_ti_price_base") }}'
-      - name: base_currency
-        description: '{{ doc("col_base_currency") }}'
       - name: geo_timezone
         description: '{{ doc("col_geo_timezone") }}'
       - name: mkt_clickid
@@ -284,8 +200,4 @@ models:
         description: '{{ doc("col_event_format") }}'
       - name: event_version
         description: '{{ doc("col_event_version") }}'
-      - name: event_fingerprint
-        description: '{{ doc("col_event_fingerprint") }}'
-      - name: true_tstamp
-        description: '{{ doc("col_true_tstamp") }}'
       - name: page_view_id
