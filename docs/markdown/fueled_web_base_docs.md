@@ -1,6 +1,6 @@
 {% docs table_base_sessions_lifecycle_manifest %}
 
-This incremental table is a manifest of all sessions that have been processed by the Fueled dbt web model. For each session, the start and end timestamp is recorded. 
+This incremental table is a manifest of all sessions that have been processed by the Fueled dbt web model. For each session, the start and end timestamp is recorded.
 
 By knowing the lifecycle of a session the model is able to able to determine which sessions and thus events to process for a given timeframe, as well as the complete date range required to reprocess all events of each session.
 
@@ -17,22 +17,19 @@ This table contains the lower and upper timestamp limits for the given run of th
 
 {% enddocs %}
 
-
 {% docs table_base_events_this_run %}
 
-For any given run, this table contains all required events to be consumed by subsequent nodes in the Fueled dbt web package. This is a cleaned, deduped dataset, containing all columns from the raw events table as well as having the `page_view_id` joined in from the page view context. 
+For any given run, this table contains all required events to be consumed by subsequent nodes in the Fueled dbt web package. This is a cleaned, deduped dataset, containing all columns from the raw events table as well as having the `page_view_id` joined in from the page view context.
 
 **Note: This table should be used as the input to any custom modules that require event level data, rather than selecting straight from `atomic.events`**
 
 {% enddocs %}
-
 
 {% docs table_base_sessions_this_run %}
 
 For any given run, this table contains all the required sessions.
 
 {% enddocs %}
-
 
 {% docs table_base_quarantined_sessions %}
 

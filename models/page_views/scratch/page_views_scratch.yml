@@ -28,10 +28,6 @@ models:
         description: '{{ doc("col_domain_sessionid") }}'
         tests:
           - not_null
-      - name: domain_sessionidx
-        description: '{{ doc("col_domain_sessionidx") }}'
-        tests:
-          - not_null
       - name: page_view_in_session_index
         description: A page view index within a single session
         tests:
@@ -96,8 +92,6 @@ models:
         description: '{{ doc("col_page_urlpath") }}'
       - name: page_urlquery
         description: '{{ doc("col_page_urlquery") }}'
-      - name: page_urlfragment
-        description: '{{ doc("col_page_urlfragment") }}'
       - name: mkt_medium
         description: '{{ doc("col_mkt_medium") }}'
       - name: mkt_source
@@ -114,16 +108,12 @@ models:
         description: '{{ doc("col_mkt_network") }}'
       - name: page_referrer
         description: '{{ doc("col_page_referrer") }}'
-      - name: refr_urlscheme
-        description: '{{ doc("col_refr_urlscheme") }}'
       - name: refr_urlhost
         description: '{{ doc("col_refr_urlhost") }}'
       - name: refr_urlpath
         description: '{{ doc("col_refr_urlpath") }}'
       - name: refr_urlquery
         description: '{{ doc("col_refr_urlquery") }}'
-      - name: refr_urlfragment
-        description: '{{ doc("col_refr_urlfragment") }}'
       - name: refr_medium
         description: '{{ doc("col_refr_medium") }}'
       - name: refr_source
@@ -302,21 +292,3 @@ models:
           - not_null
   - name: fueled_web_pv_limits
     description: '{{ doc("table_pv_limits") }}'
-  - name: fueled_web_pv_scroll_depth
-    description: '{{ doc("table_scroll_depth") }}'
-    tests:
-      - unique:
-          column_name: "(page_view_id || '-' || domain_sessionid)"
-          config:
-            tags: primary-key
-            enabled: "{{ var('fueled__limit_page_views_to_session', true) | as_bool }}"
-      - unique:
-          column_name: "page_view_id"
-          config:
-            tags: primary-key
-            enabled: "{{  var('fueled__limit_page_views_to_session', true) is not true | as_bool }}"
-    columns:
-      - name: page_view_id
-        description: '{{ doc("col_page_view_id") }}'
-        tests:
-          - not_null

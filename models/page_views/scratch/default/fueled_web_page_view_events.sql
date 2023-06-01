@@ -19,7 +19,9 @@ with page_view_events as (
 
     -- session fields
     ev.domain_sessionid,
+    /*
     ev.domain_sessionidx,
+    */
 
     -- timestamp fields
     ev.dvce_created_tstamp,
@@ -32,6 +34,7 @@ with page_view_events as (
 
     ev.page_title,
     ev.page_url,
+    /*
     ev.page_urlscheme,
     ev.page_urlhost,
     ev.page_urlpath,
@@ -45,8 +48,9 @@ with page_view_events as (
     ev.mkt_campaign,
     ev.mkt_clickid,
     ev.mkt_network,
-
+    */
     ev.page_referrer,
+    /*
     ev.refr_urlscheme ,
     ev.refr_urlhost,
     ev.refr_urlpath,
@@ -64,9 +68,9 @@ with page_view_events as (
     ev.geo_latitude,
     ev.geo_longitude,
     ev.geo_timezone ,
-
+    */
     ev.user_ipaddress,
-
+    /*
     ev.useragent,
 
     ev.br_lang,
@@ -75,6 +79,7 @@ with page_view_events as (
     ev.br_colordepth,
     ev.br_renderengine,
     ev.os_timezone,
+    */
 
     row_number() over (partition by ev.page_view_id order by ev.derived_tstamp, ev.dvce_created_tstamp) as page_view_id_dedupe_index
 
@@ -101,8 +106,9 @@ select
 
   -- session fields
   pv.domain_sessionid,
+  /*
   pv.domain_sessionidx,
-
+  */
   -- timestamp fields
   pv.dvce_created_tstamp,
   pv.collector_tstamp,
@@ -114,6 +120,7 @@ select
 
   pv.page_title,
   pv.page_url,
+  /*
   pv.page_urlscheme,
   pv.page_urlhost,
   pv.page_urlpath,
@@ -127,8 +134,10 @@ select
   pv.mkt_campaign,
   pv.mkt_clickid,
   pv.mkt_network,
+  */
 
   pv.page_referrer,
+  /*
   pv.refr_urlscheme ,
   pv.refr_urlhost,
   pv.refr_urlpath,
@@ -145,10 +154,11 @@ select
   pv.geo_zipcode,
   pv.geo_latitude,
   pv.geo_longitude,
-  pv.geo_timezone ,
+  pv.geo_timezone,
+  */
 
   pv.user_ipaddress,
-
+  /*
   pv.useragent,
 
   pv.br_lang,
@@ -157,6 +167,7 @@ select
   pv.br_colordepth,
   pv.br_renderengine,
   pv.os_timezone,
+  */
 
   row_number() over (partition by pv.domain_sessionid order by pv.derived_tstamp, pv.dvce_created_tstamp) as page_view_in_session_index --Moved to post dedupe, unlike V1 web model.
 

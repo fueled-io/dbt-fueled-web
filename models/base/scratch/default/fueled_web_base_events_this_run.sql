@@ -15,50 +15,33 @@
 
 with events_this_run AS (
   select
-    a.app_id,
-    a.platform,
-    a.etl_tstamp,
-    a.collector_tstamp,
-    a.dvce_created_tstamp,
-    a.event,
-    a.event_id,
-    a.txn_id,
-    a.name_tracker,
-    a.v_tracker,
-    a.v_collector,
-    a.v_etl,
-    a.user_id,
-    a.user_ipaddress,
-    a.user_fingerprint,
+    'fueled-analytics-client' as app_id,
+    'web' as platform,
+    a.sent_at as etl_tstamp,
+    a.original_timestamp as collector_tstamp,
+    a.original_timestamp as dvce_created_tstamp,
+    'page_view' as event,
+    a.id as event_id,
+    a.id as page_view_id,
+    a.context_source_id as name_tracker,
+    a.context_library_version as v_tracker,
+    a.context_destination_id as v_collector,
+    a.context_destination_type as v_etl,
+    a.user_id as user_id,
+    a.context_ip as user_ipaddress,
     b.domain_userid, -- take domain_userid from manifest. This ensures only 1 domain_userid per session.
-    a.domain_sessionidx,
-    a.network_userid,
-    a.geo_country,
-    a.geo_region,
-    a.geo_city,
-    a.geo_zipcode,
-    a.geo_latitude,
-    a.geo_longitude,
-    a.geo_region_name,
-    a.ip_isp,
-    a.ip_organization,
-    a.ip_domain,
-    a.ip_netspeed,
-    a.page_url,
-    a.page_title,
-    a.page_referrer,
-    a.page_urlscheme,
-    a.page_urlhost,
-    a.page_urlport,
-    a.page_urlpath,
-    a.page_urlquery,
-    a.page_urlfragment,
-    a.refr_urlscheme,
-    a.refr_urlhost,
-    a.refr_urlport,
-    a.refr_urlpath,
-    a.refr_urlquery,
-    a.refr_urlfragment,
+    a.context_anonymous_id as network_userid,
+    a.url as page_url,
+    a.title as page_title,
+    a.context_source_type as page_urlscheme,
+    {{ dbt_utils.get_url_host(field='a.url') }} as page_urlhost,
+    a.path as page_urlpath,
+    a.search as page_urlquery,
+    a.referrer as page_referrer,
+    {{ dbt_utils.get_url_host(field='a.referrer') }} as refr_urlhost, 
+    {{ dbt_utils.get_url_path(field='a.referrer') }} as refr_path,
+    /*
+    a.useragent,
     a.refr_medium,
     a.refr_source,
     a.refr_term,
@@ -67,30 +50,6 @@ with events_this_run AS (
     a.mkt_term,
     a.mkt_content,
     a.mkt_campaign,
-    a.se_category,
-    a.se_action,
-    a.se_label,
-    a.se_property,
-    a.se_value,
-    a.tr_orderid,
-    a.tr_affiliation,
-    a.tr_total,
-    a.tr_tax,
-    a.tr_shipping,
-    a.tr_city,
-    a.tr_state,
-    a.tr_country,
-    a.ti_orderid,
-    a.ti_sku,
-    a.ti_name,
-    a.ti_category,
-    a.ti_price,
-    a.ti_quantity,
-    a.pp_xoffset_min,
-    a.pp_xoffset_max,
-    a.pp_yoffset_min,
-    a.pp_yoffset_max,
-    a.useragent,
     a.br_name,
     a.br_family,
     a.br_version,
@@ -118,75 +77,30 @@ with events_this_run AS (
     a.dvce_ismobile,
     a.dvce_screenwidth,
     a.dvce_screenheight,
-    a.doc_charset,
-    a.doc_width,
-    a.doc_height,
-    a.tr_currency,
-    a.tr_total_base,
-    a.tr_tax_base,
-    a.tr_shipping_base,
-    a.ti_currency,
-    a.ti_price_base,
-    a.base_currency,
-    a.geo_timezone,
-    a.mkt_clickid,
-    a.mkt_network,
-    a.etl_tags,
-    a.dvce_sent_tstamp,
-    a.refr_domain_userid,
-    a.refr_dvce_tstamp,
-    a.domain_sessionid,
-    a.derived_tstamp,
-    a.event_vendor,
-    a.event_name,
-    a.event_format,
-    a.event_version,
-    a.event_fingerprint,
-    a.true_tstamp,
-    {% if var('fueled__enable_load_tstamp', true) %}
+    */
+    a.width as doc_width,
+    a.height as doc_height,
+    a.original_timestamp as dvce_sent_tstamp,
+    a.context_anonymous_id as domain_sessionid,
+    a.original_timestamp as derived_tstamp,
+    'fueled' as event_vendor,
+    'page_view' as event_name,
+    'jsonschema' as event_format,
+    a.context_library_version as event_version,
+    {% if var('fueled__enable_load_tstamp', false) %}
       a.load_tstamp,
     {% endif %}
-    row_number() over (partition by a.event_id order by a.collector_tstamp) as event_id_dedupe_index
+    row_number() over (partition by a.id order by a.original_timestamp) as event_id_dedupe_index
 
   from {{ var('fueled__events') }} as a
   inner join {{ ref('fueled_web_base_sessions_this_run') }} as b
-  on a.domain_sessionid = b.session_id
+  on a.context_anonymous_id = b.session_id
 
-  where a.collector_tstamp <= {{ fueled_utils.timestamp_add('day', var("fueled__max_session_days", 3), 'b.start_tstamp') }}
-  and a.dvce_sent_tstamp <= {{ fueled_utils.timestamp_add('day', var("fueled__days_late_allowed", 3), 'a.dvce_created_tstamp') }}
-  and a.collector_tstamp >= {{ lower_limit }}
-  and a.collector_tstamp <= {{ upper_limit }}
+  where a.original_timestamp <= {{ fueled_utils.timestamp_add('day', var("fueled__max_session_days", 3), 'b.start_tstamp') }}
+  and a.original_timestamp <= {{ fueled_utils.timestamp_add('day', var("fueled__days_late_allowed", 3), 'a.original_timestamp') }}
+  and a.original_timestamp >= {{ lower_limit }}
+  and a.original_timestamp <= {{ upper_limit }}
   and {{ fueled_utils.app_id_filter(var("fueled__app_id",[])) }}
 )
 
-, page_context as (
-  select
-    root_id,
-    root_tstamp,
-    id as page_view_id,
-    row_number() over (partition by root_id order by root_tstamp) as page_context_dedupe_index
-
-  from {{ var('fueled__page_view_context') }}
-  where
-    root_tstamp >= {{ lower_limit }}
-    and root_tstamp <= {{ upper_limit }}
-)
-
-, page_context_dedupe as (
-  select
-   *
-
-  from page_context
-  where page_context_dedupe_index = 1
-)
-
-select
-  e.*,
-  pc.page_view_id
-
-from events_this_run as e
-left join page_context_dedupe as pc
-on e.event_id = pc.root_id
-and e.collector_tstamp = pc.root_tstamp
-
-where e.event_id_dedupe_index = 1
+select * from events_this_run
